@@ -204,6 +204,18 @@ namespace interfata
                     LogActivity("Please enter a message to hide!");
                     return;
                 }
+                FileInfo fileInfo = new FileInfo(inputPath);
+                long imageSize = fileInfo.Length;
+                long headerSize = 54; // Standard BMP header size
+                long pixelDataSize = imageSize - headerSize;
+                long maxMessageSize = pixelDataSize / 8; // 1 bit per byte for LSB
+
+                if (message.Length > maxMessageSize)
+                {
+                    LogActivity($"Error: The message is too large to fit in the selected image. Max capacity: {maxMessageSize} bytes.");
+                    return;
+                }
+
 
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
@@ -333,19 +345,27 @@ namespace interfata
                     return;
                 }
 
+                // Determine the maximum capacity of the image
+                FileInfo fileInfo = new FileInfo(inputPath);
+                long imageSize = fileInfo.Length;
+                long headerSize = 54; // Standard BMP header size
+                long pixelDataSize = imageSize - headerSize;
+                long maxMessageSize = pixelDataSize / 8; // 1 bit per byte for LSB
+
+                // Allocate a buffer based on the maximum capacity
+                StringBuilder buffer = new StringBuilder((int)maxMessageSize);
+
                 if (currentMethod == SteganographyMethod.StandardLSB)
                 {
-                    StringBuilder buffer = new StringBuilder(256); // Use StringBuilder instead of IntPtr
-                    SteganographyWrapper.revealMessage(inputPath, buffer, 256);
-                    string message = buffer.ToString(); // Convert StringBuilder to string
-                    txtOutput.Text = message;
+                    SteganographyWrapper.revealMessage(inputPath, buffer, buffer.Capacity);
                 }
                 else
                 {
-                    StringBuilder sb = new StringBuilder(256);
-                    SteganographyWrapper.reveal_message_multichannel(inputPath, sb, sb.Capacity);
-                    txtOutput.Text = sb.ToString();
+                    SteganographyWrapper.reveal_message_multichannel(inputPath, buffer, buffer.Capacity);
                 }
+
+                // Display the extracted message
+                txtOutput.Text = buffer.ToString();
             }
             catch (Exception ex)
             {

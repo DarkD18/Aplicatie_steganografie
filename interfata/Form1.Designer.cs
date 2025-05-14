@@ -46,8 +46,6 @@ namespace interfata
             this.pictureBoxOriginal = new System.Windows.Forms.PictureBox();
             this.pictureBoxModified = new System.Windows.Forms.PictureBox();
             this.btnCompareImages = new System.Windows.Forms.Button();
-            //this.btnHideFile = new System.Windows.Forms.Button();
-            //this.btnExtractFile = new System.Windows.Forms.Button();
             this.btnConvertToBmp = new System.Windows.Forms.Button();
             this.cmbMethod = new System.Windows.Forms.ComboBox();
             this.grpOperationMode = new System.Windows.Forms.GroupBox();
@@ -175,6 +173,7 @@ namespace interfata
             this.pictureBoxOriginal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxOriginal.TabIndex = 17;
             this.pictureBoxOriginal.TabStop = false;
+            this.pictureBoxOriginal.Image = Properties.Resources.placeholder_image_original; // Use a placeholder image from resources
             // 
             // pictureBoxModified
             // 
@@ -184,6 +183,7 @@ namespace interfata
             this.pictureBoxModified.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxModified.TabIndex = 18;
             this.pictureBoxModified.TabStop = false;
+            this.pictureBoxModified.Image = Properties.Resources.placeholder_image_result; // Use a placeholder image from resources
             // 
             // btnCompareImages
             // 
@@ -193,24 +193,6 @@ namespace interfata
             this.btnCompareImages.TabIndex = 19;
             this.btnCompareImages.Text = "Compare images";
             this.btnCompareImages.Click += new System.EventHandler(this.btnCompareImages_Click);
-            // 
-            // btnHideFile
-            // 
-            //this.btnHideFile.Location = new System.Drawing.Point(747, 238);
-            //this.btnHideFile.Name = "btnHideFile";
-            //this.btnHideFile.Size = new System.Drawing.Size(150, 30);
-            //this.btnHideFile.TabIndex = 20;
-            //this.btnHideFile.Text = "Ascunde fișier";
-            //this.btnHideFile.Click += new System.EventHandler(this.btnHideFile_Click);
-            // 
-            // btnExtractFile
-            // 
-            //this.btnExtractFile.Location = new System.Drawing.Point(747, 274);
-            //this.btnExtractFile.Name = "btnExtractFile";
-            //this.btnExtractFile.Size = new System.Drawing.Size(150, 30);
-            //this.btnExtractFile.TabIndex = 21;
-            //this.btnExtractFile.Text = "Extrage fișier";
-            //this.btnExtractFile.Click += new System.EventHandler(this.btnExtractFile_Click);
             // 
             // btnConvertToBmp
             // 
@@ -281,7 +263,7 @@ namespace interfata
             // lblCapacityInfo
             // 
             this.lblCapacityInfo.AutoSize = true;
-            this.lblCapacityInfo.Location = new System.Drawing.Point(70, 170); // Below input path
+            this.lblCapacityInfo.Location = new System.Drawing.Point(70, 170);
             this.lblCapacityInfo.Name = "lblCapacityInfo";
             this.lblCapacityInfo.Size = new System.Drawing.Size(0, 16);
             this.lblCapacityInfo.TabIndex = 25;
@@ -303,17 +285,12 @@ namespace interfata
             this.Controls.Add(this.btnHideMessage);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.label3);
-            //this.Controls.Add(this.btnBrowseOutput);
-            //this.Controls.Add(this.txtOutputPath);
-            //this.Controls.Add(this.label2);
             this.Controls.Add(this.btnBrowseInput);
             this.Controls.Add(this.txtInputPath);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBoxOriginal);
             this.Controls.Add(this.pictureBoxModified);
             this.Controls.Add(this.btnCompareImages);
-            //this.Controls.Add(this.btnHideFile);
-            //this.Controls.Add(this.btnExtractFile);
             this.Controls.Add(this.btnConvertToBmp);
             this.Controls.Add(this.cmbMethod);
             this.Name = "Form1";
