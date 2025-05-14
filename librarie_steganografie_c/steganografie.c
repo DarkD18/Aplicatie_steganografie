@@ -20,8 +20,8 @@ void hideMessage(const char* image_path, const char* message, const char* output
     pixel_count = row_size * abs(bmp->header.height); // Total bytes in pixel data
 
     // Debug: Log pixel count and message length
-    snprintf(debug_msg, sizeof(debug_msg), "msg_len: %zu, pixel_count: %zu", msg_len, pixel_count);
-    MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
+    //snprintf(debug_msg, sizeof(debug_msg), "msg_len: %zu, pixel_count: %zu", msg_len, pixel_count);
+    //MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
 
     // Ensure there is enough space in the image
     if (msg_len * 8 > pixel_count * 8) {
@@ -49,11 +49,11 @@ void hideMessage(const char* image_path, const char* message, const char* output
         MessageBoxA(NULL, "Failed to save BMP file.\n", "ERROR", MB_OK);
     }
     else {
-        MessageBoxA(NULL, "Message hidden successfully in the image.", "SUCCESS", MB_OK);
+        //MessageBoxA(NULL, "Message hidden successfully in the image.", "SUCCESS", MB_OK);
     }
 
     // Debug: Log before freeing memory
-    MessageBoxA(NULL, "Freeing BMP memory.", "DEBUG", MB_OK);
+    //MessageBoxA(NULL, "Freeing BMP memory.", "DEBUG", MB_OK);
 
     free_bmp(bmp);
 }

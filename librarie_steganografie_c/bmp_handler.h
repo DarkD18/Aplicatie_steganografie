@@ -25,8 +25,6 @@ typedef struct {
 } BMPHeader;
 #pragma pack(pop)
 
-// test commit
-
 // BMP image structure
 typedef struct {
     BMPHeader header;

@@ -293,6 +293,7 @@ namespace interfata
             this.Controls.Add(this.btnCompareImages);
             this.Controls.Add(this.btnConvertToBmp);
             this.Controls.Add(this.cmbMethod);
+            this.Controls.Add(this.lblCapacityInfo);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";

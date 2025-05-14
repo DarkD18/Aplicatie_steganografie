@@ -34,8 +34,8 @@ BMPImage* load_bmp(const char* file_path) {
         size_t row_size = ((bmp->header.width * bmp->header.bit_count + 31) / 32) * 4; // Row size with padding
         bmp->header.image_size = row_size * abs(bmp->header.height); // Total pixel data size
         char debug_msg[256];
-        snprintf(debug_msg, sizeof(debug_msg), "Calculated image_size: %u", bmp->header.image_size);
-        MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
+        //snprintf(debug_msg, sizeof(debug_msg), "Calculated image_size: %u", bmp->header.image_size);
+        //MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
     }
 
     // Allocate memory for pixel data
@@ -57,7 +57,7 @@ BMPImage* load_bmp(const char* file_path) {
         return NULL;
     }
 
-    MessageBoxA(NULL, "BMP file loaded successfully.", "INFO", MB_OK);
+    //MessageBoxA(NULL, "BMP file loaded successfully.", "INFO", MB_OK);
     fclose(file);
     return bmp;
 }
@@ -83,7 +83,7 @@ int save_bmp(const char* output_path, BMPImage* bmp) {
         return 0; // Failure
     }
 
-    MessageBoxA(NULL, "File saved successfully.", "INFO", MB_OK);
+    //MessageBoxA(NULL, "File saved successfully.", "INFO", MB_OK);
     fclose(file);
     return 1; // Success
 }
@@ -93,14 +93,14 @@ void free_bmp(BMPImage* bmp) {
 
     if (bmp->pixel_data) {
         char debug_msg[256];
-        snprintf(debug_msg, sizeof(debug_msg), "Freeing pixel_data at address: %p", bmp->pixel_data);
-        MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
+        //snprintf(debug_msg, sizeof(debug_msg), "Freeing pixel_data at address: %p", bmp->pixel_data);
+        //MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
         free(bmp->pixel_data);
         bmp->pixel_data = NULL; // Avoid double free
     }
 
     char debug_msg[256];
-    snprintf(debug_msg, sizeof(debug_msg), "Freeing BMP structure at address: %p", bmp);
-    MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
+    //snprintf(debug_msg, sizeof(debug_msg), "Freeing BMP structure at address: %p", bmp);
+    //MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
     free(bmp);
 }

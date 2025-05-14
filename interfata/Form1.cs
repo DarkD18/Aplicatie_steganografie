@@ -104,7 +104,9 @@ namespace interfata
                 long imageSize = fileInfo.Length;
                 long headerSize = 54; // BMP header
                 long pixelDataSize = imageSize - headerSize;
-                long maxCapacity = pixelDataSize / 8; // 1 bit per byte
+                long maxCapacity = currentMethod == SteganographyMethod.StandardLSB
+                    ? pixelDataSize / 8 // 1 bit per byte for Standard LSB
+                    : (pixelDataSize / 8) * 3; // 3 channels = 3x capacity for Multi-Channel LSB
 
                 lblCapacityInfo.Text = $"Can hide: ~{maxCapacity} bytes";
                 lblCapacityInfo.ForeColor = maxCapacity > 0 ? SystemColors.ControlText : Color.Red;
@@ -208,14 +210,17 @@ namespace interfata
                 long imageSize = fileInfo.Length;
                 long headerSize = 54; // Standard BMP header size
                 long pixelDataSize = imageSize - headerSize;
-                long maxMessageSize = pixelDataSize / 8; // 1 bit per byte for LSB
 
-                if (message.Length > maxMessageSize)
+                // Adjust maxMessageSize based on the method
+                long maxMessageSize = currentMethod == SteganographyMethod.StandardLSB
+                    ? pixelDataSize / 8 // 1 bit per byte for Standard LSB
+                    : (pixelDataSize / 8) * 3; // 3 channels = 3x capacity for Multi-Channel LSB
+
+                if (message.Length + 1 > maxMessageSize) // Include null terminator
                 {
                     LogActivity($"Error: The message is too large to fit in the selected image. Max capacity: {maxMessageSize} bytes.");
                     return;
                 }
-
 
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
@@ -345,12 +350,15 @@ namespace interfata
                     return;
                 }
 
-                // Determine the maximum capacity of the image
                 FileInfo fileInfo = new FileInfo(inputPath);
                 long imageSize = fileInfo.Length;
                 long headerSize = 54; // Standard BMP header size
                 long pixelDataSize = imageSize - headerSize;
-                long maxMessageSize = pixelDataSize / 8; // 1 bit per byte for LSB
+
+                // Adjust maxMessageSize based on the method
+                long maxMessageSize = currentMethod == SteganographyMethod.StandardLSB
+                    ? pixelDataSize / 8 // 1 bit per byte for Standard LSB
+                    : (pixelDataSize / 8) * 3; // 3 channels = 3x capacity for Multi-Channel LSB
 
                 // Allocate a buffer based on the maximum capacity
                 StringBuilder buffer = new StringBuilder((int)maxMessageSize);
