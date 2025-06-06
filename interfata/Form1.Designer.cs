@@ -46,13 +46,16 @@ namespace interfata
             this.pictureBoxOriginal = new System.Windows.Forms.PictureBox();
             this.pictureBoxModified = new System.Windows.Forms.PictureBox();
             this.btnCompareImages = new System.Windows.Forms.Button();
-            this.btnConvertToBmp = new System.Windows.Forms.Button();
             this.cmbMethod = new System.Windows.Forms.ComboBox();
             this.grpOperationMode = new System.Windows.Forms.GroupBox();
             this.rdbMessage = new System.Windows.Forms.RadioButton();
             this.rdbFile = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
             this.lblCapacityInfo = new System.Windows.Forms.Label();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.txtOutput_path = new System.Windows.Forms.TextBox();
+            this.label_extracted_output = new System.Windows.Forms.Label();
+            this.progressBarCompare = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModified)).BeginInit();
             this.grpOperationMode.SuspendLayout();
@@ -167,23 +170,23 @@ namespace interfata
             // 
             // pictureBoxOriginal
             // 
+            this.pictureBoxOriginal.Image = global::interfata.Properties.Resources.placeholder_image_original;
             this.pictureBoxOriginal.Location = new System.Drawing.Point(12, 320);
             this.pictureBoxOriginal.Name = "pictureBoxOriginal";
             this.pictureBoxOriginal.Size = new System.Drawing.Size(395, 344);
             this.pictureBoxOriginal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxOriginal.TabIndex = 17;
             this.pictureBoxOriginal.TabStop = false;
-            this.pictureBoxOriginal.Image = Properties.Resources.placeholder_image_original; // Use a placeholder image from resources
             // 
             // pictureBoxModified
             // 
+            this.pictureBoxModified.Image = global::interfata.Properties.Resources.placeholder_image_result;
             this.pictureBoxModified.Location = new System.Drawing.Point(420, 320);
             this.pictureBoxModified.Name = "pictureBoxModified";
             this.pictureBoxModified.Size = new System.Drawing.Size(395, 344);
             this.pictureBoxModified.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxModified.TabIndex = 18;
             this.pictureBoxModified.TabStop = false;
-            this.pictureBoxModified.Image = Properties.Resources.placeholder_image_result; // Use a placeholder image from resources
             // 
             // btnCompareImages
             // 
@@ -193,16 +196,6 @@ namespace interfata
             this.btnCompareImages.TabIndex = 19;
             this.btnCompareImages.Text = "Compare images";
             this.btnCompareImages.Click += new System.EventHandler(this.btnCompareImages_Click);
-            // 
-            // btnConvertToBmp
-            // 
-            this.btnConvertToBmp.Location = new System.Drawing.Point(830, 473);
-            this.btnConvertToBmp.Name = "btnConvertToBmp";
-            this.btnConvertToBmp.Size = new System.Drawing.Size(150, 30);
-            this.btnConvertToBmp.TabIndex = 22;
-            this.btnConvertToBmp.Text = "Convert to BMP";
-            this.btnConvertToBmp.UseVisualStyleBackColor = true;
-            this.btnConvertToBmp.Click += new System.EventHandler(this.btnConvertToBmp_Click);
             // 
             // cmbMethod
             // 
@@ -236,7 +229,7 @@ namespace interfata
             this.rdbMessage.Size = new System.Drawing.Size(117, 20);
             this.rdbMessage.TabIndex = 0;
             this.rdbMessage.TabStop = true;
-            this.rdbMessage.Text = "Hide Message";
+            this.rdbMessage.Text = "Message";
             this.rdbMessage.UseVisualStyleBackColor = true;
             this.rdbMessage.CheckedChanged += new System.EventHandler(this.rdbMessage_CheckedChanged);
             // 
@@ -247,7 +240,7 @@ namespace interfata
             this.rdbFile.Name = "rdbFile";
             this.rdbFile.Size = new System.Drawing.Size(82, 20);
             this.rdbFile.TabIndex = 1;
-            this.rdbFile.Text = "Hide File";
+            this.rdbFile.Text = "File";
             this.rdbFile.UseVisualStyleBackColor = true;
             this.rdbFile.CheckedChanged += new System.EventHandler(this.rdbFile_CheckedChanged);
             // 
@@ -268,12 +261,47 @@ namespace interfata
             this.lblCapacityInfo.Size = new System.Drawing.Size(0, 16);
             this.lblCapacityInfo.TabIndex = 25;
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(830, 550);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(150, 30);
+            this.btnReset.TabIndex = 26;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
+            // txtOutput_path
+            // 
+            this.txtOutput_path.Location = new System.Drawing.Point(30, 280);
+            this.txtOutput_path.Name = "txtOutput_path";
+            this.txtOutput_path.Size = new System.Drawing.Size(550, 22);
+            this.txtOutput_path.TabIndex = 27;
+            // 
+            // label_extracted_output
+            // 
+            this.label_extracted_output.AutoSize = true;
+            this.label_extracted_output.Location = new System.Drawing.Point(250, 260);
+            this.label_extracted_output.Name = "label_extracted_output";
+            this.label_extracted_output.Size = new System.Drawing.Size(112, 16);
+            this.label_extracted_output.TabIndex = 6;
+            this.label_extracted_output.Text = "Extracted file path";
+            // 
+            // progressBar1
+            // 
+            this.progressBarCompare.Location = new System.Drawing.Point(825, 427);
+            this.progressBarCompare.Name = "progressBar1";
+            this.progressBarCompare.Size = new System.Drawing.Size(155, 23);
+            this.progressBarCompare.TabIndex = 28;
+            this.progressBarCompare.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(992, 676);
+            this.Controls.Add(this.progressBarCompare);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.grpOperationMode);
             this.Controls.Add(this.btnExit);
@@ -291,9 +319,11 @@ namespace interfata
             this.Controls.Add(this.pictureBoxOriginal);
             this.Controls.Add(this.pictureBoxModified);
             this.Controls.Add(this.btnCompareImages);
-            this.Controls.Add(this.btnConvertToBmp);
             this.Controls.Add(this.cmbMethod);
             this.Controls.Add(this.lblCapacityInfo);
+            this.Controls.Add(this.btnReset);
+            this.Controls.Add(this.txtOutput_path);
+            this.Controls.Add(this.label_extracted_output);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -324,13 +354,16 @@ namespace interfata
         private System.Windows.Forms.RichTextBox txtActivity;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button btnConvertToBmp;
         private System.Windows.Forms.ComboBox cmbMethod;
         private System.Windows.Forms.GroupBox grpOperationMode;
         private System.Windows.Forms.RadioButton rdbMessage;
         private System.Windows.Forms.RadioButton rdbFile;
         private System.Windows.Forms.Label lblCapacityInfo;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.TextBox txtOutput_path;
+        private System.Windows.Forms.Label label_extracted_output;
         private Label label4;
+        private ProgressBar progressBarCompare;
     }
 }
 

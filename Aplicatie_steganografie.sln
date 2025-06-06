@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "interfata", "interfata\interfata.csproj", "{290269D0-B14F-4E69-9B4D-18E214E8D03F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CACEEC66-3515-4225-BBF4-67CBC2C43119} = {CACEEC66-3515-4225-BBF4-67CBC2C43119}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "librarie_steganografie_c", "librarie_steganografie_c\librarie_steganografie_c.vcxproj", "{CACEEC66-3515-4225-BBF4-67CBC2C43119}"
 EndProject

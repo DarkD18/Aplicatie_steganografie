@@ -11,44 +11,68 @@ namespace interfata
     {
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void hideMessage(
-            [MarshalAs(UnmanagedType.LPStr)] string imagePath,
+            IntPtr pixelData,
+            uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] string message,
-            [MarshalAs(UnmanagedType.LPStr)] string outputPath);
+            IntPtr outputData
+        );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void revealMessage(
-            [MarshalAs(UnmanagedType.LPStr)] string imagePath,
+            IntPtr pixelData,
+            uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] StringBuilder output,
-            int maxLen);
-        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void hide_file(
-            [MarshalAs(UnmanagedType.LPStr)] string coverImagePath,
-            [MarshalAs(UnmanagedType.LPStr)] string fileToHidePath,
-            [MarshalAs(UnmanagedType.LPStr)] string outputImagePath);
+            uint maxLen
+        );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void extract_file(
-            [MarshalAs(UnmanagedType.LPStr)] string stegoImagePath,
-            [MarshalAs(UnmanagedType.LPStr)] string outputFilePath);
+        public static extern void hideFile(
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string fileName,
+            IntPtr fileData,
+            uint fileSize,
+            IntPtr outputData
+        );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr get_embedded_filename(string stegoImagePath);
+        public static extern void extractFile(
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+            IntPtr fileData,
+            ref uint fileSize
+        );
 
-        public static string GetEmbeddedFileName(string stegoImagePath)
-        {
-            IntPtr ptr = get_embedded_filename(stegoImagePath);
-            return Marshal.PtrToStringAnsi(ptr);
-        }
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void hide_message_multichannel(
-            [MarshalAs(UnmanagedType.LPStr)] string imagePath,
+            IntPtr pixelData,
+            uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] string message,
-            [MarshalAs(UnmanagedType.LPStr)] string outputPath);
+            IntPtr outputData
+        );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void reveal_message_multichannel(
-            [MarshalAs(UnmanagedType.LPStr)] string imagePath,
+            IntPtr pixelData,
+            uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] StringBuilder output,
-            int maxLen);
+            uint maxLen
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void hide_file_multichannel(
+            IntPtr pixel_data, uint pixel_data_size,
+            [MarshalAs(UnmanagedType.LPStr)] string file_name,
+            IntPtr file_data, uint file_size,
+            IntPtr output_data
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void extract_file_multichannel(
+            IntPtr pixel_data, uint pixel_data_size,
+            StringBuilder file_name,
+            IntPtr file_data, ref uint file_size
+        );
     }
 }

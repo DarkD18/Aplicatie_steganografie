@@ -4,275 +4,29 @@
 #include <string.h>
 #include <windows.h>
 
-void hideMessage(const char* image_path, const char* message, const char* output_path) {
-    BMPImage* bmp = load_bmp(image_path);
-    if (!bmp) {
-        MessageBoxA(NULL, "Unable to load image.\n", "ERROR", MB_OK);
-        return;
-    }
+static uint8_t extracted_filename[256];
 
-    size_t msg_len = strlen(message) + 1; // Include null terminator
-    size_t pixel_count = 0;
-    char debug_msg[256]; // Buffer to hold the formatted message
-
-    // Calculate pixel count with padding
-    size_t row_size = ((bmp->header.width * bmp->header.bit_count + 31) / 32) * 4; // Row size with padding
-    pixel_count = row_size * abs(bmp->header.height); // Total bytes in pixel data
-
-    // Debug: Log pixel count and message length
-    //snprintf(debug_msg, sizeof(debug_msg), "msg_len: %zu, pixel_count: %zu", msg_len, pixel_count);
-    //MessageBoxA(NULL, debug_msg, "DEBUG", MB_OK);
-
-    // Ensure there is enough space in the image
-    if (msg_len * 8 > pixel_count * 8) {
-        MessageBoxA(NULL, "Message is too long to fit in the image.\n", "ERROR", MB_OK);
-        free_bmp(bmp);
-        return;
-    }
-
-    // Bounds checking: Ensure we don't write beyond pixel_data
-    size_t max_bits = pixel_count * 8; // Total available bits
-    for (size_t i = 0; i < msg_len; ++i) {
-        for (int bit = 0; bit < 8; ++bit) {
-            size_t index = i * 8 + bit;
-            if (index >= max_bits) {
-                snprintf(debug_msg, sizeof(debug_msg), "Index out of bounds: %zu (max: %zu)", index, max_bits);
-                MessageBoxA(NULL, debug_msg, "ERROR", MB_OK);
-                free_bmp(bmp);
-                return;
+// Helper to advance to the next pixel/channel, handling row/col/channel
+static int32_t next_pixel_channel(uint32_t width, uint32_t height, uint32_t* x, uint32_t* y, uint32_t* channel) {
+    (*channel)++;
+    if (*channel == 3) {
+        *channel = 0;
+        (*x)++;
+        if (*x == width) {
+            *x = 0;
+            (*y)++;
+            if (*y == height) {
+                return 0; // End of image
             }
-            bmp->pixel_data[index] = (bmp->pixel_data[index] & ~1) | ((message[i] >> bit) & 1);
         }
     }
-    // Save the modified BMP
-    if (!save_bmp(output_path, bmp)) {
-        MessageBoxA(NULL, "Failed to save BMP file.\n", "ERROR", MB_OK);
-    }
-    else {
-        //MessageBoxA(NULL, "Message hidden successfully in the image.", "SUCCESS", MB_OK);
-    }
-
-    // Debug: Log before freeing memory
-    //MessageBoxA(NULL, "Freeing BMP memory.", "DEBUG", MB_OK);
-
-    free_bmp(bmp);
+    return 1;
 }
-
-void revealMessage(const char* image_path, char* output, size_t max_len)
-{
-    BMPImage* bmp = load_bmp(image_path);
-    if (!bmp) {
-        printf("Error: Unable to load image.\n");
-        return;
-    }
-
-    // Decode the message from the LSBs of the pixel data
-    size_t i, bit;
-    for (i = 0; i < max_len; ++i) {
-        output[i] = 0;
-        for (bit = 0; bit < 8; ++bit) {
-            output[i] |= (bmp->pixel_data[i * 8 + bit] & 1) << bit;
-        }
-        // Stop if null terminator is found in the extracted message
-        if (output[i] == '\0') 
-        {
-            break;
-        }
-        
-    }
-
-    output[max_len - 1] = '\0';
-
-    free_bmp(bmp);
-}
-
-
-// Ascunde orice fișier într-o imagine BMP
-void hide_file(const char* cover_path, const char* file_path, const char* output_path) 
-{
-    FILE* log = fopen("D:\\debug_hide.txt", "w");
-    if (!log) {
-        MessageBoxA(NULL, "Nu pot crea fisierul debug_hide.txt", "EROARE fopen", MB_OK);
-        return;
-    }
-    fprintf(log, "== START hide_file ==\n");
-
-    fprintf(log, "cover_path: %s\n", cover_path);
-    fprintf(log, "file_path: %s\n", file_path);
-    fprintf(log, "output_path: %s\n", output_path);
-
-    BMPImage* bmp = load_bmp(cover_path);
-    if (!bmp) {
-        fprintf(log, "ERROR: Failed to load BMP\n");
-        fclose(log);
-        return;
-    }
-    fprintf(log, "Loaded BMP OK\n");
-    fprintf(log, "Image size (from header): %u\n", bmp->header.image_size);
-
-    FILE* file = fopen(file_path, "rb");
-    if (!file) {
-        printf("Error: Could not open file to hide.\n");
-        free_bmp(bmp);
-        return;
-    }
-
-    // 1. Get file size
-    fseek(file, 0, SEEK_END);
-    uint32_t file_size = ftell(file);
-    rewind(file);
-    printf("File size: %u bytes\n", file_size);
-
-    // 2. Get file name
-    const char* file_name = strrchr(file_path, '\\');
-    if (!file_name) file_name = strrchr(file_path, '/');
-    file_name = file_name ? file_name + 1 : file_path;
-
-    uint32_t name_len = strlen(file_name);
-    printf("File name: %s (len: %u)\n", file_name, name_len);
-
-    // 3. Total bits needed = (4 + name_len + 4 + file_size) * 8
-    size_t total_bytes = 4 + name_len + 4 + file_size;
-    size_t total_bits = total_bytes * 8;
-    if (total_bits > bmp->header.image_size) {
-        printf("ERROR: Not enough space in cover image (%zu needed, %u available)\n", total_bits, bmp->header.image_size);
-        fclose(file);
-        free_bmp(bmp);
-        return;
-    }
-
-    fprintf(log, "file_size = %u\n", file_size);
-    fprintf(log, "file_name = %s\n", file_name);
-    fprintf(log, "name_len = %u\n", name_len);
-    fprintf(log, "total_bytes = %zu\n", total_bytes);
-    fprintf(log, "image size = %u\n", bmp->header.image_size);
-
-    if (bmp->header.image_size < total_bits) {
-        printf("Error: Cover image too small.\n");
-        fclose(file);
-        free_bmp(bmp);
-        return;
-    }
-    
-    printf("Copying metadata + data into buffer...\n");
-
-    uint8_t* all_data = (uint8_t*)malloc(total_bytes);
-    if (!all_data) {
-        printf("Error: Memory allocation failed.\n");
-        fclose(file);
-        free_bmp(bmp);
-        return;
-    }
-
-    // 4. Write metadata to buffer
-    memcpy(all_data, &name_len, 4);                     // nume_len
-    memcpy(all_data + 4, file_name, name_len);          // nume
-    memcpy(all_data + 4 + name_len, &file_size, 4);     // file_size
-    size_t read_bytes = fread(all_data + 4 + name_len + 4, 1, file_size, file);
-    if (read_bytes != file_size) {
-        printf("Error: Failed to read full file content (%zu/%u bytes read)\n", read_bytes, file_size);
-        fclose(file);
-        free(all_data);
-        free_bmp(bmp);
-        return;
-    }
-
-    // 5. Write bits to image
-    size_t bit_index = 0;
-    for (size_t i = 0; i < total_bytes; ++i) {
-        for (int b = 0; b < 8; ++b) {
-            if (bit_index >= bmp->header.image_size) {
-                printf("ERROR: bit_index %zu exceeds image size %u\n", bit_index, bmp->header.image_size);
-                fclose(file);
-                free(all_data);
-                free_bmp(bmp);
-                return;
-            }
-            fprintf(log, "writing bits...\n");
-            bmp->pixel_data[bit_index] = (bmp->pixel_data[bit_index] & ~1) | ((all_data[i] >> b) & 1);
-            bit_index++;
-        }
-    }
-    fprintf(log, "done writing, saving image\n");
-    fclose(log);
-    fclose(file);
-    free(all_data);
-
-    save_bmp(output_path, bmp);
-    free_bmp(bmp);
-}
-
-void extract_file(const char* stego_path, const char* output_file_path_hint) {
-    BMPImage* bmp = load_bmp(stego_path);
-    if (!bmp) {
-        printf("Error: Could not load stego image.\n");
-        return;
-    }
-
-    size_t bit_index = 0;
-
-    // 1. Extract name_len
-    uint32_t name_len = 0;
-    for (int b = 0; b < 32; ++b)
-        name_len |= (bmp->pixel_data[bit_index++] & 1) << b;
-
-    // 2. Extract name
-    char* name = (char*)malloc(name_len + 1);
-    for (uint32_t i = 0; i < name_len; ++i) {
-        uint8_t byte = 0;
-        for (int b = 0; b < 8; ++b)
-            byte |= (bmp->pixel_data[bit_index++] & 1) << b;
-        name[i] = byte;
-    }
-    name[name_len] = '\0';
-
-    if (name_len == 0 || name_len > 255) {
-        printf("Error: Invalid file name length: %u\n", name_len);
-        free_bmp(bmp);
-        return;
-    }
-
-    // 3. Extract file_size
-    uint32_t file_size = 0;
-    for (int b = 0; b < 32; ++b)
-        file_size |= (bmp->pixel_data[bit_index++] & 1) << b;
-
-    if (bit_index + (uint64_t)file_size * 8 > bmp->header.image_size) {
-        printf("ERROR: Extracted file size is too large for image.\n");
-        free(name);
-        free_bmp(bmp);
-        return;
-    }
-    // 4. Create output file (use embedded name)
-    char output_full_path[512];
-    snprintf(output_full_path, sizeof(output_full_path), "%s\\%s", output_file_path_hint, name);
-    FILE* out = fopen(output_full_path, "wb");
-    if (!out) {
-        printf("Error: Cannot create file: %s\n", name);
-        free(name);
-        free_bmp(bmp);
-        return;
-    }
-
-    // 5. Extract data
-    for (uint32_t i = 0; i < file_size; ++i) {
-        uint8_t byte = 0;
-        for (int b = 0; b < 8; ++b)
-            byte |= (bmp->pixel_data[bit_index++] & 1) << b;
-        fwrite(&byte, 1, 1, out);
-    }
-
-    fclose(out);
-    free(name);
-    free_bmp(bmp);
-}
-static char extracted_filename[256]; 
-
-const char* get_embedded_filename(const char* stego_path) {
+__declspec(dllexport) const uint8_t* get_embedded_filename(const uint8_t* stego_path) {
     BMPImage* bmp = load_bmp(stego_path);
     if (!bmp) return NULL;
 
-    size_t bit_index = 0;
+    uint32_t bit_index = 0;
     uint32_t name_len = 0;
     for (int b = 0; b < 32; ++b)
         name_len |= (bmp->pixel_data[bit_index++] & 1) << b;
@@ -294,53 +48,358 @@ const char* get_embedded_filename(const char* stego_path) {
     return extracted_filename;
 }
 
-// Multi-Channel LSB: Spreads bits across R+G+B channels
-void hide_message_multichannel(const char* image_path, const char* message, const char* output_path)
+#pragma region standard
+__declspec(dllexport) void hideMessage(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    const uint8_t* message, uint8_t* output_data)
 {
-    BMPImage* bmp = load_bmp(image_path);
-    if (!bmp) {
-        printf("Error: Unable to load image.\n");
+    uint32_t msg_len = strlen((const char*)message) + 1; // Include null terminator
+    uint32_t pixel_count = pixel_data_size / 3; // 3 bytes per pixel
+
+    if (msg_len * 8 > pixel_count) {
+        MessageBoxA(NULL, "Error: Message is too long to fit in the image.", "ERROR", MB_OK);
         return;
     }
 
-    size_t msg_len = strlen(message) + 1; // Include null terminator
-    size_t max_capacity = bmp->header.image_size / 3; // 3 channels = 3x capacity
+    memcpy(output_data, pixel_data, pixel_data_size);
 
-    if (msg_len > max_capacity) {
-        printf("Error: Message too long for multi-channel LSB.\n");
-        free_bmp(bmp);
-        return;
-    }
-
-    // Spread each bit across R, G, B channels
-    for (size_t i = 0; i < msg_len; ++i) {
-        for (int bit = 0; bit < 8; ++bit) {
-            int pixel_index = i * 3 + (bit % 3); // Cycle through R,G,B
-            bmp->pixel_data[pixel_index] = (bmp->pixel_data[pixel_index] & ~1) | ((message[i] >> bit) & 1);
+    uint32_t bit_idx = 0;
+    for (uint32_t i = 0; i < msg_len; ++i) {
+        for (int bit = 0; bit < 8; ++bit, ++bit_idx) {
+            uint32_t pixel = bit_idx;
+            if (pixel * 3 + 2 >= pixel_data_size) break;
+            // Hide in blue channel (offset +2)
+            output_data[pixel * 3 + 2] = (output_data[pixel * 3 + 2] & ~1) | ((message[i] >> bit) & 1);
         }
     }
 
-    save_bmp(output_path, bmp);
-    free_bmp(bmp);
+    MessageBoxA(NULL, "Message hidden successfully in the image.", "SUCCESS", MB_OK);
 }
 
-void reveal_message_multichannel(const char* image_path, char* output, size_t max_len)
+__declspec(dllexport) void revealMessage(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    uint8_t* output, uint32_t max_len)
 {
-    BMPImage* bmp = load_bmp(image_path);
-    if (!bmp) {
-        printf("Error: Unable to load image.\n");
-        return;
-    }
-
-    for (size_t i = 0; i < max_len; ++i) {
+    uint32_t pixel_count = pixel_data_size / 3;
+    uint32_t bit_idx = 0;
+    for (uint32_t i = 0; i < max_len; ++i) {
         output[i] = 0;
-        for (int bit = 0; bit < 8; ++bit) {
-            int pixel_index = i * 3 + (bit % 3); // Match the hiding pattern
-            output[i] |= (bmp->pixel_data[pixel_index] & 1) << bit;
+        for (int bit = 0; bit < 8; ++bit, ++bit_idx) {
+            uint32_t pixel = bit_idx;
+            if (pixel * 3 + 2 >= pixel_data_size || pixel >= pixel_count) {
+                output[i] = '\0';
+                return;
+            }
+            output[i] |= (pixel_data[pixel * 3 + 2] & 1) << bit;
         }
         if (output[i] == '\0') break;
     }
     output[max_len - 1] = '\0';
-    free_bmp(bmp);
 }
 
+
+__declspec(dllexport) void hideFile(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    const uint8_t* file_name, const uint8_t* file_data, uint32_t file_size,
+    uint8_t* output_data)
+{
+    uint32_t name_len = strlen((const char*)file_name);
+    uint32_t total_bits = 32 + name_len * 8 + 32 + file_size * 8;
+    uint32_t pixel_count = pixel_data_size / 3;
+
+    if (total_bits > pixel_count) {
+        MessageBoxA(NULL, "Error: File is too large to fit in the image.", "ERROR", MB_OK);
+        return;
+    }
+
+    memcpy(output_data, pixel_data, pixel_data_size);
+
+    uint32_t bit_idx = 0;
+    // Encode name length (32 bits)
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((name_len >> b) & 1);
+
+    // Encode file name
+    for (uint32_t i = 0; i < name_len; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((file_name[i] >> b) & 1);
+
+    // Encode file size (32 bits)
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((file_size >> b) & 1);
+
+    // Encode file content
+    for (uint32_t i = 0; i < file_size; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((file_data[i] >> b) & 1);
+
+    MessageBoxA(NULL, "File hidden successfully in the image.", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport) void extractFile(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    uint8_t* file_name, uint8_t* file_data, uint32_t* file_size)
+{
+    uint32_t bit_idx = 0;
+    // Decode name length
+    uint32_t name_len = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        name_len |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+
+    // Decode file name
+    for (uint32_t i = 0; i < name_len; ++i) {
+        file_name[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            file_name[i] |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+    }
+    file_name[name_len] = '\0';
+
+    // Decode file size
+    *file_size = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        *file_size |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+
+    // Decode file content
+    for (uint32_t i = 0; i < *file_size; ++i) {
+        file_data[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            file_data[i] |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+    }
+
+    MessageBoxA(NULL, "File extracted successfully from the image.", "SUCCESS", MB_OK);
+}
+
+
+#pragma endregion 
+
+
+#pragma region multichannel
+// Multi-Channel LSB: Spreads bits across R+G+B channels
+__declspec(dllexport) void hide_message_multichannel(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    const uint8_t* message, uint8_t* output_data)
+{
+    uint32_t msg_len = strlen((const char*)message) + 1; // Include null terminator
+    uint32_t total_bits = msg_len * 8;
+
+    if (total_bits > pixel_data_size) {
+        MessageBoxA(NULL, "Error: Message too long for multi-channel LSB.", "ERROR", MB_OK);
+        return;
+    }
+
+    memcpy(output_data, pixel_data, pixel_data_size);
+
+    for (uint32_t bit_idx = 0; bit_idx < total_bits; ++bit_idx) {
+        uint32_t byte_idx = bit_idx / 8;
+        uint8_t bit = (message[byte_idx] >> (bit_idx % 8)) & 1;
+        output_data[bit_idx] = (output_data[bit_idx] & ~1) | bit;
+    }
+
+    MessageBoxA(NULL, "Message hidden successfully in the image.", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport) void reveal_message_multichannel(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    uint8_t* output, uint32_t max_len)
+{
+    uint32_t total_bits = pixel_data_size;
+    uint32_t out_idx = 0;
+    uint32_t bit_in_char = 0;
+    output[0] = 0;
+
+    for (uint32_t bit_idx = 0; bit_idx < total_bits && out_idx < max_len - 1; ++bit_idx) {
+        output[out_idx] |= (pixel_data[bit_idx] & 1) << bit_in_char;
+        bit_in_char++;
+        if (bit_in_char == 8) {
+            if (output[out_idx] == '\0') break;
+            out_idx++;
+            output[out_idx] = 0;
+            bit_in_char = 0;
+        }
+    }
+    output[max_len - 1] = '\0';
+}
+
+__declspec(dllexport) void hide_file_multichannel(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    const uint8_t* file_name, const uint8_t* file_data, uint32_t file_size,
+    uint8_t* output_data)
+{
+    uint32_t name_len = strlen((const char*)file_name);
+    uint32_t total_bits = 32 + name_len * 8 + 32 + file_size * 8;
+
+    if (total_bits > pixel_data_size) {
+        MessageBoxA(NULL, "Error: File is too large to fit in the image.", "ERROR", MB_OK);
+        return;
+    }
+
+    memcpy(output_data, pixel_data, pixel_data_size);
+
+    uint32_t bit_idx = 0;
+    // Encode name length (32 bits)
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((name_len >> b) & 1);
+
+    // Encode file name
+    for (uint32_t i = 0; i < name_len; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((file_name[i] >> b) & 1);
+
+    // Encode file size (32 bits)
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((file_size >> b) & 1);
+
+    // Encode file content
+    for (uint32_t i = 0; i < file_size; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((file_data[i] >> b) & 1);
+
+    MessageBoxA(NULL, "File hidden successfully in the image.", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport) void extract_file_multichannel(
+    const uint8_t* pixel_data, uint32_t pixel_data_size,
+    uint8_t* file_name, uint8_t* file_data, uint32_t* file_size)
+{
+    uint32_t bit_idx = 0;
+    // Decode name length
+    uint32_t name_len = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        name_len |= (pixel_data[bit_idx] & 1) << b;
+
+    // Decode file name
+    for (uint32_t i = 0; i < name_len; ++i) {
+        file_name[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            file_name[i] |= (pixel_data[bit_idx] & 1) << b;
+    }
+    file_name[name_len] = '\0';
+
+    // Decode file size
+    *file_size = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx)
+        *file_size |= (pixel_data[bit_idx] & 1) << b;
+
+    // Decode file content
+    for (uint32_t i = 0; i < *file_size; ++i) {
+        file_data[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            file_data[i] |= (pixel_data[bit_idx] & 1) << b;
+    }
+
+    MessageBoxA(NULL, "File extracted successfully from the image.", "SUCCESS", MB_OK);
+}
+#pragma endregion
+// generate de ai
+
+//// Padded LSB: Adds padding bits to the message
+//void hide_message_with_padding(const uint8_t* image_path, const uint8_t* message, const uint8_t* output_path) {
+//	BMPImage* bmp = load_bmp(image_path);
+//	if (!bmp) {
+//		printf("Error: Unable to load image.\n");
+//		return;
+//	}
+//	uint32_t msg_len = strlen(message) + 1; // Include null terminator
+//	uint32_t pixel_count = bmp->header.image_size;
+//	// Calculate padding
+//	uint32_t padding = (8 - (msg_len % 8)) % 8;
+//	uint32_t total_bits = msg_len * 8 + padding;
+//	if (total_bits > pixel_count * 8) {
+//		printf("Error: Message too long for padded LSB.\n");
+//		free_bmp(bmp);
+//		return;
+//	}
+//	// Hide message with padding
+//	for (uint32_t i = 0; i < msg_len; ++i) {
+//		for (int bit = 0; bit < 8; ++bit) {
+//			uint32_t index = i * 8 + bit;
+//			bmp->pixel_data[index] = (bmp->pixel_data[index] & ~1) | ((message[i] >> bit) & 1);
+//		}
+//	}
+//	// Add padding bits
+//	for (uint32_t i = msg_len * 8; i < total_bits; ++i) {
+//		bmp->pixel_data[i] &= ~1; // Set to zero
+//	}
+//	save_bmp(output_path, bmp);
+//	free_bmp(bmp);
+//}   
+//
+//
+//void reveal_message_with_padding(const uint8_t* image_path, uint8_t* output, uint32_t max_len) {
+//	BMPImage* bmp = load_bmp(image_path);
+//	if (!bmp) {
+//		printf("Error: Unable to load image.\n");
+//		return;
+//	}
+//	uint32_t i, bit;
+//	for (i = 0; i < max_len; ++i) {
+//		output[i] = 0;
+//		for (bit = 0; bit < 8; ++bit) {
+//			uint32_t index = i * 8 + bit;
+//			output[i] |= (bmp->pixel_data[index] & 1) << bit;
+//		}
+//		if (output[i] == '\0') break;
+//	}
+//	output[max_len - 1] = '\0';
+//	free_bmp(bmp);
+//}   
+
+
+
+//void hide_message_with_encryption(const uint8_t* image_path, const uint8_t* message, const uint8_t* output_path) {
+//	// Encrypt the message using a simple XOR cipher
+//	uint8_t key = 'K'; // Simple key for XOR encryption
+//	uint8_t encrypted_message[256];
+//	uint32_t msg_len = strlen(message) + 1; // Include null terminator
+//	for (uint32_t i = 0; i < msg_len; ++i) {
+//		encrypted_message[i] = message[i] ^ key;
+//	}
+//	// Hide the encrypted message in the image
+//	//hideMessage(image_path, encrypted_message, output_path);
+//}
+//
+//
+//void reveal_message_with_decryption(const uint8_t* image_path, uint8_t* output, uint32_t max_len) {
+//	// Reveal the encrypted message from the image
+//	//revealMessage(image_path, output, max_len);
+//	// Decrypt the message using the same XOR cipher
+//	uint8_t key = 'K'; // Simple key for XOR encryption
+//	for (uint32_t i = 0; i < strlen(output); ++i) {
+//		output[i] ^= key;
+//	}
+//}
+//
+//void hide_message_with_compression(const uint8_t* image_path, const uint8_t* message, const uint8_t* output_path) {
+//	// Compress the message using a simple RLE (Run-Length Encoding) algorithm
+//	uint8_t compressed_message[256];
+//	uint32_t compressed_len = 0;
+//	uint32_t msg_len = strlen(message);
+//	for (uint32_t i = 0; i < msg_len; ++i) {
+//		uint8_t count = 1;
+//		while (i + 1 < msg_len && message[i] == message[i + 1]) {
+//			count++;
+//			i++;
+//		}
+//		compressed_message[compressed_len++] = count;
+//		compressed_message[compressed_len++] = message[i];
+//	}
+//	compressed_message[compressed_len] = '\0';
+//	// Hide the compressed message in the image
+//	//hideMessage(image_path, compressed_message, output_path);
+//}
+//
+//
+//void reveal_message_with_decompression(const uint8_t* image_path, uint8_t* output, uint32_t max_len) {
+//	// Reveal the compressed message from the image
+//	//revealMessage(image_path, output, max_len);
+//	// Decompress the message using the same RLE algorithm
+//	uint32_t decompressed_len = 0;
+//	for (uint32_t i = 0; i < strlen(output); i += 2) {
+//		uint8_t count = output[i];
+//		uint8_t value = output[i + 1];
+//		for (uint8_t j = 0; j < count; ++j) {
+//			output[decompressed_len++] = value;
+//		}
+//	}
+//	output[decompressed_len] = '\0';
+//}
