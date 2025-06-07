@@ -531,11 +531,12 @@ namespace interfata
 
                     StringBuilder fileName = new StringBuilder(256); // Adjust size as needed
                     byte[] fileData = new byte[pixelData.Length];
-                    fileSize = 0;
+                    fileSize = (uint)fileData.Length;
 
                     GCHandle headerHandle = GCHandle.Alloc(header, GCHandleType.Pinned);
                     GCHandle pixelDataHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
                     GCHandle fileDataHandle = GCHandle.Alloc(fileData, GCHandleType.Pinned);
+
 
                     try
                     {
@@ -545,25 +546,27 @@ namespace interfata
                         {
                             // Call the single-channel hiding function
                             SteganographyWrapper.extractFile(
-                                pixelDataHandle.AddrOfPinnedObject(),
-                               (uint)pixelData.Length,
-                                fileName,
-                                fileDataHandle.AddrOfPinnedObject(),
-                                ref fileSize
-                            );
+                                   pixelDataHandle.AddrOfPinnedObject(),
+                                   (uint)pixelData.Length,
+                                   fileName,
+                                   (uint)fileName.Capacity,
+                                   fileDataHandle.AddrOfPinnedObject(),
+                                   (uint)fileData.Length,
+                                   ref fileSize
+                               );
                         }
                         else if (currentMethod == SteganographyMethod.MultiChannelLSB)
                         {
                             // Call the multi-channel hiding function
-                            uint fileSizePtr = (uint)fileData.Length;
                             SteganographyWrapper.extract_file_multichannel(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 fileName,
+                                (uint)fileName.Capacity,
                                 fileDataHandle.AddrOfPinnedObject(),
-                                ref fileSizePtr
+                                (uint)fileData.Length,
+                                ref fileSize
                             );
-                            fileSize = (uint)fileSizePtr;
                         }
                         string outputPath = Path.Combine(Path.GetDirectoryName(inputPath), fileName.ToString());
                         File.WriteAllBytes(outputPath, fileData.Take((int)fileSize).ToArray());

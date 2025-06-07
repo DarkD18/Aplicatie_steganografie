@@ -39,11 +39,12 @@ namespace interfata
         public static extern void extractFile(
             IntPtr pixelData,
             uint pixelDataSize,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+           [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+            uint fileNameBufsize,
             IntPtr fileData,
+            uint fileDataBufsize,
             ref uint fileSize
         );
-
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void hide_message_multichannel(
             IntPtr pixelData,
@@ -70,9 +71,13 @@ namespace interfata
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void extract_file_multichannel(
-            IntPtr pixel_data, uint pixel_data_size,
-            StringBuilder file_name,
-            IntPtr file_data, ref uint file_size
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+            uint fileNameBufsize,
+            IntPtr fileData,
+            uint fileDataBufsize,
+            ref uint fileSize
         );
     }
 }

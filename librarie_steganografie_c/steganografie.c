@@ -103,6 +103,9 @@ __declspec(dllexport) void hideFile(
     const uint8_t* file_name, const uint8_t* file_data, uint32_t file_size,
     uint8_t* output_data)
 {
+    const char magic[4] = { 'S','T','G','F' };
+    uint8_t method = 0x01; // 0x01 = Standard LSB
+
     uint32_t name_len = strlen((const char*)file_name);
     uint32_t total_bits = 32 + name_len * 8 + 32 + file_size * 8;
     uint32_t pixel_count = pixel_data_size / 3;
@@ -115,6 +118,14 @@ __declspec(dllexport) void hideFile(
     memcpy(output_data, pixel_data, pixel_data_size);
 
     uint32_t bit_idx = 0;
+    // Encode magic header
+    for (int i = 0; i < 4; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((magic[i] >> b) & 1);
+    // Encode method byte
+    for (int b = 0; b < 8; ++b, ++bit_idx)
+        output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((method >> b) & 1);
+
     // Encode name length (32 bits)
     for (int b = 0; b < 32; ++b, ++bit_idx)
         output_data[bit_idx * 3 + 2] = (output_data[bit_idx * 3 + 2] & ~1) | ((name_len >> b) & 1);
@@ -137,14 +148,37 @@ __declspec(dllexport) void hideFile(
 }
 
 __declspec(dllexport) void extractFile(
-    const uint8_t* pixel_data, uint32_t pixel_data_size,
-    uint8_t* file_name, uint8_t* file_data, uint32_t* file_size)
+    const uint8_t* pixel_data,
+    uint32_t pixel_data_size,
+    uint8_t* file_name,
+    uint32_t file_name_bufsize,
+    uint8_t* file_data,
+    uint32_t file_data_bufsize,
+    uint32_t* file_size)
 {
     uint32_t bit_idx = 0;
+    // Decode magic header
+    char magic[4];
+    for (int i = 0; i < 4; ++i) {
+        magic[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            magic[i] |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+    }
+    // Decode method byte
+    uint8_t method = 0;
+    for (int b = 0; b < 8; ++b, ++bit_idx)
+        method |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+
+    if (memcmp(magic, "STGF", 4) != 0 || method != 0x01) {
+        MessageBoxA(NULL, "No file hidden with Standard LSB in this image.", "ERROR", MB_OK);
+        return;
+    }
+
     // Decode name length
     uint32_t name_len = 0;
     for (int b = 0; b < 32; ++b, ++bit_idx)
         name_len |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+    if (name_len >= file_name_bufsize) name_len = file_name_bufsize - 1;
 
     // Decode file name
     for (uint32_t i = 0; i < name_len; ++i) {
@@ -158,7 +192,11 @@ __declspec(dllexport) void extractFile(
     *file_size = 0;
     for (int b = 0; b < 32; ++b, ++bit_idx)
         *file_size |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
-
+    if (*file_size > file_data_bufsize) {
+        MessageBoxA(NULL, "Error: Extracted file size exceeds buffer capacity.", "ERROR", MB_OK);
+        return;
+    }
+    *file_size = file_data_bufsize;
     // Decode file content
     for (uint32_t i = 0; i < *file_size; ++i) {
         file_data[i] = 0;
@@ -225,8 +263,10 @@ __declspec(dllexport) void hide_file_multichannel(
     const uint8_t* file_name, const uint8_t* file_data, uint32_t file_size,
     uint8_t* output_data)
 {
+    const char magic[4] = { 'S','T','G','F' };
+    uint8_t method = 0x02; // 0x01 = Multichannell LSB
     uint32_t name_len = strlen((const char*)file_name);
-    uint32_t total_bits = 32 + name_len * 8 + 32 + file_size * 8;
+    uint32_t total_bits = 40 + 32 + name_len * 8 + 32 + file_size * 8;
 
     if (total_bits > pixel_data_size) {
         MessageBoxA(NULL, "Error: File is too large to fit in the image.", "ERROR", MB_OK);
@@ -236,6 +276,14 @@ __declspec(dllexport) void hide_file_multichannel(
     memcpy(output_data, pixel_data, pixel_data_size);
 
     uint32_t bit_idx = 0;
+    // Encode magic header
+    for (int i = 0; i < 4; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((magic[i] >> b) & 1);
+    // Encode method byte
+    for (int b = 0; b < 8; ++b, ++bit_idx)
+        output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((method >> b) & 1);
+
     // Encode name length (32 bits)
     for (int b = 0; b < 32; ++b, ++bit_idx)
         output_data[bit_idx] = (output_data[bit_idx] & ~1) | ((name_len >> b) & 1);
@@ -259,13 +307,32 @@ __declspec(dllexport) void hide_file_multichannel(
 
 __declspec(dllexport) void extract_file_multichannel(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
-    uint8_t* file_name, uint8_t* file_data, uint32_t* file_size)
+    uint8_t* file_name, uint32_t file_name_bufsize,
+    uint8_t* file_data, uint32_t file_data_bufsize,
+    uint32_t* file_size)
 {
     uint32_t bit_idx = 0;
+    // Decode magic header
+    char magic[4];
+    for (int i = 0; i < 4; ++i) {
+        magic[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx)
+            magic[i] |= (pixel_data[bit_idx] & 1) << b;
+    }
+    // Decode method byte
+    uint8_t method = 0;
+    for (int b = 0; b < 8; ++b, ++bit_idx)
+        method |= (pixel_data[bit_idx] & 1) << b;
+
+    if (memcmp(magic, "STGF", 4) != 0 || method != 0x02) {
+        MessageBoxA(NULL, "No file hidden with Multichannel LSB in this image.", "ERROR", MB_OK);
+        return;
+    }
     // Decode name length
     uint32_t name_len = 0;
     for (int b = 0; b < 32; ++b, ++bit_idx)
         name_len |= (pixel_data[bit_idx] & 1) << b;
+    if (name_len >= file_name_bufsize) name_len = file_name_bufsize - 1;
 
     // Decode file name
     for (uint32_t i = 0; i < name_len; ++i) {
@@ -279,6 +346,7 @@ __declspec(dllexport) void extract_file_multichannel(
     *file_size = 0;
     for (int b = 0; b < 32; ++b, ++bit_idx)
         *file_size |= (pixel_data[bit_idx] & 1) << b;
+    if (*file_size > file_data_bufsize) *file_size = file_data_bufsize;
 
     // Decode file content
     for (uint32_t i = 0; i < *file_size; ++i) {
