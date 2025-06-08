@@ -56,6 +56,8 @@ namespace interfata
             this.txtOutput_path = new System.Windows.Forms.TextBox();
             this.label_extracted_output = new System.Windows.Forms.Label();
             this.progressBarCompare = new System.Windows.Forms.ProgressBar();
+            this.textboxShuffle = new System.Windows.Forms.TextBox();
+            this.textboxEncryptionKey = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModified)).BeginInit();
             this.grpOperationMode.SuspendLayout();
@@ -226,7 +228,7 @@ namespace interfata
             this.rdbMessage.Checked = true;
             this.rdbMessage.Location = new System.Drawing.Point(6, 21);
             this.rdbMessage.Name = "rdbMessage";
-            this.rdbMessage.Size = new System.Drawing.Size(117, 20);
+            this.rdbMessage.Size = new System.Drawing.Size(85, 20);
             this.rdbMessage.TabIndex = 0;
             this.rdbMessage.TabStop = true;
             this.rdbMessage.Text = "Message";
@@ -238,7 +240,7 @@ namespace interfata
             this.rdbFile.AutoSize = true;
             this.rdbFile.Location = new System.Drawing.Point(6, 51);
             this.rdbFile.Name = "rdbFile";
-            this.rdbFile.Size = new System.Drawing.Size(82, 20);
+            this.rdbFile.Size = new System.Drawing.Size(50, 20);
             this.rdbFile.TabIndex = 1;
             this.rdbFile.Text = "File";
             this.rdbFile.UseVisualStyleBackColor = true;
@@ -287,13 +289,37 @@ namespace interfata
             this.label_extracted_output.TabIndex = 6;
             this.label_extracted_output.Text = "Extracted file path";
             // 
-            // progressBar1
+            // progressBarCompare
             // 
             this.progressBarCompare.Location = new System.Drawing.Point(825, 427);
-            this.progressBarCompare.Name = "progressBar1";
+            this.progressBarCompare.Name = "progressBarCompare";
             this.progressBarCompare.Size = new System.Drawing.Size(155, 23);
             this.progressBarCompare.TabIndex = 28;
             this.progressBarCompare.Visible = false;
+            // 
+            // textboxShuffle
+            // 
+            this.textboxShuffle.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.textboxShuffle.Location = new System.Drawing.Point(791, 238);
+            this.textboxShuffle.Name = "textboxShuffle";
+            this.textboxShuffle.Size = new System.Drawing.Size(176, 22);
+            this.textboxShuffle.TabIndex = 30;
+            this.textboxShuffle.Text = "Shuffle key";
+            this.textboxShuffle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textboxShuffle.Enter += new System.EventHandler(this.textboxShuffle_Enter);
+            this.textboxShuffle.Leave += new System.EventHandler(this.textboxShuffle_Leave);
+            // 
+            // textboxEncryptionKey
+            // 
+            this.textboxEncryptionKey.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.textboxEncryptionKey.Location = new System.Drawing.Point(791, 276);
+            this.textboxEncryptionKey.Name = "textboxEncryptionKey";
+            this.textboxEncryptionKey.Size = new System.Drawing.Size(176, 22);
+            this.textboxEncryptionKey.TabIndex = 32;
+            this.textboxEncryptionKey.Text = "Encryption Key";
+            this.textboxEncryptionKey.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textboxEncryptionKey.Enter += new System.EventHandler(this.textboxEncryptionKey_Enter);
+            this.textboxEncryptionKey.Leave += new System.EventHandler(this.textboxEncryptionKey_Leave);
             // 
             // Form1
             // 
@@ -301,6 +327,8 @@ namespace interfata
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(992, 676);
+            this.Controls.Add(this.textboxEncryptionKey);
+            this.Controls.Add(this.textboxShuffle);
             this.Controls.Add(this.progressBarCompare);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.grpOperationMode);
@@ -364,6 +392,8 @@ namespace interfata
         private System.Windows.Forms.Label label_extracted_output;
         private Label label4;
         private ProgressBar progressBarCompare;
+        private TextBox textboxShuffle;
+        private TextBox textboxEncryptionKey;
     }
 }
 

@@ -9,6 +9,7 @@ namespace interfata
 {
     internal static class SteganographyWrapper
     {
+        /******************************** Standard LSB DLL includes ***************************************/
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void hideMessage(
             IntPtr pixelData,
@@ -46,6 +47,8 @@ namespace interfata
             ref uint fileSize
         );
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+
+        /******************************** Multichannell LSB DLL includes ***************************************/
         public static extern void hide_message_multichannel(
             IntPtr pixelData,
             uint pixelDataSize,
@@ -79,5 +82,88 @@ namespace interfata
             uint fileDataBufsize,
             ref uint fileSize
         );
+        /******************************** Standard LSB shuffle DLL includes ***************************************/
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void hideMessagePassword(
+        IntPtr pixelData,
+        uint pixelDataSize,
+        [MarshalAs(UnmanagedType.LPStr)] string message,
+        [MarshalAs(UnmanagedType.LPStr)] string password,
+        IntPtr outputData
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void revealMessagePassword(
+        IntPtr pixelData,
+        uint pixelDataSize,
+        [MarshalAs(UnmanagedType.LPStr)] string password,
+        [MarshalAs(UnmanagedType.LPStr)] StringBuilder soutput,
+        uint maxLen
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+                public static extern void hideFilePassword(
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string fileName,
+            IntPtr fileData,
+            uint fileSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            IntPtr outputData
+        );
+        
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void extractFilePassword(
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+            uint fileNameBufsize,
+            IntPtr fileData,
+            uint fileDataBufsize,
+            ref uint fileSize
+        );
+
+        /******************************** Multuchannel LSB shuffle DLL includes ***************************************/
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void hideMessageMultichannelPassword(
+           IntPtr pixelData,
+           uint pixelDataSize,
+           [MarshalAs(UnmanagedType.LPStr)] string message,
+           [MarshalAs(UnmanagedType.LPStr)] string password,
+           IntPtr outputData
+       );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void revealMessageMultichannelPassword(
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder output,
+            uint maxLen
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void hideFileMultichannelPassword(
+            IntPtr pixel_data, uint pixel_data_size,
+            [MarshalAs(UnmanagedType.LPStr)] string file_name,
+            IntPtr file_data, uint file_size,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            IntPtr output_data
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void extractFileMultichannelPassword(
+            IntPtr pixelData,
+            uint pixelDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+            uint fileNameBufsize,
+            IntPtr fileData,
+            uint fileDataBufsize,
+            ref uint fileSize
+        );
+
     }
 }

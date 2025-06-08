@@ -15,6 +15,12 @@ using System.Windows.Forms;
 
 namespace interfata
 {
+    static class Constants
+    {
+        public const string DEFAULT_SHUFFLE_TEXT = "Shuffle key";
+        public const string DEFAULT_ENCRYPTION_TEXT = "Encryption key";
+    }
+
     public enum SteganographyMethod
     {
         StandardLSB,
@@ -48,7 +54,7 @@ namespace interfata
     }
 
     public partial class Form1 : Form
-    {
+    {   
 
         private System.Windows.Forms.PictureBox pictureBoxOriginal;
         private System.Windows.Forms.PictureBox pictureBoxModified;
@@ -192,6 +198,7 @@ namespace interfata
             {
                 string inputPath = txtInputPath.Text;
                 string message = txtMessage.Text;
+                string password = get_shuffle_key();
 
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
@@ -247,23 +254,49 @@ namespace interfata
                     {
                         if (currentMethod == SteganographyMethod.StandardLSB)
                         {
-                            // Call the single-channel hiding function
-                            SteganographyWrapper.hideMessage(
-                                pixelDataHandle.AddrOfPinnedObject(),
-                                (uint)pixelData.Length,
-                                message,
-                                outputDataHandle.AddrOfPinnedObject()
-                            );
+                            if (password.Length != 0)
+                            {
+                                // Call the single-channel hiding function
+                                SteganographyWrapper.hideMessagePassword(
+                                    pixelDataHandle.AddrOfPinnedObject(),
+                                    (uint)pixelData.Length,
+                                    message,
+                                    password,
+                                    outputDataHandle.AddrOfPinnedObject()
+                                 );
+                            }
+                            else
+                            {
+                                SteganographyWrapper.hideMessage(
+                                    pixelDataHandle.AddrOfPinnedObject(),
+                                    (uint)pixelData.Length,
+                                    message,
+                                    outputDataHandle.AddrOfPinnedObject()
+                                 );
+                            }
                         }
                         else if (currentMethod == SteganographyMethod.MultiChannelLSB)
                         {
-                            // Call the multi-channel hiding function
-                            SteganographyWrapper.hide_message_multichannel(
+                            if (password.Length != 0)
+                            {
+                                SteganographyWrapper.hideMessageMultichannelPassword(
+                                pixelDataHandle.AddrOfPinnedObject(),
+                                (uint)pixelData.Length,
+                                message,
+                                password,
+                                outputDataHandle.AddrOfPinnedObject()
+                             );
+                            }
+                            else
+                            {
+                                // Call the multi-channel hiding function
+                                SteganographyWrapper.hide_message_multichannel(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 message,
                                 outputDataHandle.AddrOfPinnedObject()
                             );
+                            }
                         }
                     }
                     finally
@@ -302,6 +335,7 @@ namespace interfata
             try
             {
                 string inputPath = txtInputPath.Text;
+                string password = get_shuffle_key();
 
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
@@ -356,27 +390,57 @@ namespace interfata
                         {
                             if (currentMethod == SteganographyMethod.StandardLSB)
                             {
-                                // Call the single-channel hiding function
-                                SteganographyWrapper.hideFile(
+                                if (password.Length != 0)
+                                {
+                                    SteganographyWrapper.hideFilePassword(
                                     pixelDataHandle.AddrOfPinnedObject(),
                                     (uint)pixelData.Length,
                                     fileName,
                                     fileDataHandle.AddrOfPinnedObject(),
                                     (uint)fileData.Length,
+                                    password,
                                     outputDataHandle.AddrOfPinnedObject()
                                 );
+                                }
+                                else
+                                {
+                                    // Call the single-channel hiding function
+                                    SteganographyWrapper.hideFile(
+                                        pixelDataHandle.AddrOfPinnedObject(),
+                                        (uint)pixelData.Length,
+                                        fileName,
+                                        fileDataHandle.AddrOfPinnedObject(),
+                                        (uint)fileData.Length,
+                                        outputDataHandle.AddrOfPinnedObject()
+                                    );
+                                }
                             }
                             else if (currentMethod == SteganographyMethod.MultiChannelLSB)
                             {
-                                // Call the multi-channel hiding function
-                                SteganographyWrapper.hide_file_multichannel(
-                              pixelDataHandle.AddrOfPinnedObject(),
-                             (uint)pixelData.Length,
-                              fileName,
-                              fileDataHandle.AddrOfPinnedObject(),
-                              (uint)fileData.Length,
-                              outputDataHandle.AddrOfPinnedObject()
-                          );
+                                if (password.Length != 0)
+                                {
+                                    SteganographyWrapper.hideFileMultichannelPassword(
+                                      pixelDataHandle.AddrOfPinnedObject(),
+                                     (uint)pixelData.Length,
+                                      fileName,
+                                      fileDataHandle.AddrOfPinnedObject(),
+                                      (uint)fileData.Length,
+                                      password,
+                                      outputDataHandle.AddrOfPinnedObject()
+                                  );
+                                }
+                                else
+                                {
+                                    // Call the multi-channel hiding function
+                                    SteganographyWrapper.hide_file_multichannel(
+                                      pixelDataHandle.AddrOfPinnedObject(),
+                                     (uint)pixelData.Length,
+                                      fileName,
+                                      fileDataHandle.AddrOfPinnedObject(),
+                                      (uint)fileData.Length,
+                                      outputDataHandle.AddrOfPinnedObject()
+                                  );
+                                }   
                             }
                         }
                         finally
@@ -414,11 +478,22 @@ namespace interfata
             txtActivity.AppendText($"{DateTime.Now:HH:mm:ss} - {message}\n");
             txtActivity.ScrollToCaret();
         }
+
+        private string get_shuffle_key()
+        {
+            string shuffleKey = textboxShuffle.Text;
+            if(textboxShuffle.Text == Constants.DEFAULT_SHUFFLE_TEXT)
+            {
+                return string.Empty; // Return empty if no shuffle key is provided
+            }
+            return shuffleKey;
+        }
         private void extract_message()
         {
             try
             {
                 string inputPath = txtInputPath.Text;
+                string password = get_shuffle_key();
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
                     txtOutput.Text = "Please provide the input image path!";
@@ -461,23 +536,49 @@ namespace interfata
                     {
                         if (currentMethod == SteganographyMethod.StandardLSB)
                         {
-                            // Call the single-channel extraction function
-                            SteganographyWrapper.revealMessage(
-                                pixelDataHandle.AddrOfPinnedObject(),
-                               (uint)pixelData.Length,
-                                output,
-                                (uint)output.Capacity
-                            );
+                            if (password.Length != 0)
+                            {
+                                SteganographyWrapper.revealMessagePassword(
+                                    pixelDataHandle.AddrOfPinnedObject(),
+                                   (uint)pixelData.Length,
+                                    password,
+                                    output,
+                                    (uint)output.Capacity
+                                );
+                            }
+                            else
+                            {
+                                // Call the single-channel extraction function
+                                SteganographyWrapper.revealMessage(
+                                    pixelDataHandle.AddrOfPinnedObject(),
+                                   (uint)pixelData.Length,
+                                    output,
+                                    (uint)output.Capacity
+                                );
+                            }
                         }
                         else if (currentMethod == SteganographyMethod.MultiChannelLSB)
                         {
-                            // Call the multi-channel extraction function
-                         SteganographyWrapper.reveal_message_multichannel(
+                            if (password.Length != 0)
+                            {                                // Call the multi-channel extraction function
+                                SteganographyWrapper.revealMessageMultichannelPassword(
+                                pixelDataHandle.AddrOfPinnedObject(),
+                                (uint)pixelData.Length,
+                                password,
+                                output,
+                               (uint)output.Capacity
+                            );
+                            }
+                            else
+                            {
+                                // Call the multi-channel extraction function
+                                SteganographyWrapper.reveal_message_multichannel(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 output,
                                (uint)output.Capacity
                             );
+                            }
                         }
 
                         // Ensure the message is null-terminated
@@ -502,6 +603,7 @@ namespace interfata
             try
             {
                 string inputPath = txtInputPath.Text;
+                string password = get_shuffle_key();
                 uint fileSize;
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
@@ -544,21 +646,53 @@ namespace interfata
 
                         if (currentMethod == SteganographyMethod.StandardLSB)
                         {
-                            // Call the single-channel hiding function
-                            SteganographyWrapper.extractFile(
+                            if (password.Length != 0)
+                            {
+                                // Call the single-channel hiding function with password
+                                SteganographyWrapper.extractFilePassword(
                                    pixelDataHandle.AddrOfPinnedObject(),
                                    (uint)pixelData.Length,
+                                   password,
                                    fileName,
                                    (uint)fileName.Capacity,
                                    fileDataHandle.AddrOfPinnedObject(),
                                    (uint)fileData.Length,
                                    ref fileSize
-                               );
+                                );
+                            }
+                            else
+                            {
+                                // Call the single-channel hiding function
+                                SteganographyWrapper.extractFile(
+                                       pixelDataHandle.AddrOfPinnedObject(),
+                                       (uint)pixelData.Length,
+                                       fileName,
+                                       (uint)fileName.Capacity,
+                                       fileDataHandle.AddrOfPinnedObject(),
+                                       (uint)fileData.Length,
+                                       ref fileSize
+                                   );
+                            }
                         }
                         else if (currentMethod == SteganographyMethod.MultiChannelLSB)
                         {
-                            // Call the multi-channel hiding function
-                            SteganographyWrapper.extract_file_multichannel(
+                            if (password.Length != 0)
+                            {
+                                SteganographyWrapper.extractFileMultichannelPassword(
+                                pixelDataHandle.AddrOfPinnedObject(),
+                                (uint)pixelData.Length,
+                                password,
+                                fileName,
+                                (uint)fileName.Capacity,
+                                fileDataHandle.AddrOfPinnedObject(),
+                                (uint)fileData.Length,
+                                ref fileSize
+                            );
+                            }
+                            else
+                            {
+                                // Call the multi-channel hiding function
+                                SteganographyWrapper.extract_file_multichannel(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 fileName,
@@ -567,6 +701,7 @@ namespace interfata
                                 (uint)fileData.Length,
                                 ref fileSize
                             );
+                            }
                         }
                         string outputPath = Path.Combine(Path.GetDirectoryName(inputPath), fileName.ToString());
                         File.WriteAllBytes(outputPath, fileData.Take((int)fileSize).ToArray());
@@ -684,111 +819,7 @@ namespace interfata
             previewForm.Show();
         }
 
-        private void btnHideFile_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Step 1: Select the cover image
-                using (OpenFileDialog coverDialog = new OpenFileDialog())
-                {
-                    coverDialog.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif;*.tif|All Files|*.*";
-                    coverDialog.Title = "Select the cover image";
-                    if (coverDialog.ShowDialog() != DialogResult.OK) return;
-
-                    string inputPath = coverDialog.FileName;
-
-                    // Step 2: Select the file to hide
-                    using (OpenFileDialog fileDialog = new OpenFileDialog())
-                    {
-                        fileDialog.Title = "Select the file to hide";
-                        if (fileDialog.ShowDialog() != DialogResult.OK) return;
-
-                        string filePath = fileDialog.FileName;
-                        byte[] fileData = File.ReadAllBytes(filePath);
-                        string fileName = Path.GetFileName(filePath);
-
-                        // Step 3: Convert the cover image to BMP format in memory
-                        using (var image = Image.FromFile(inputPath))
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
-                            byte[] bmpData = memoryStream.ToArray();
-
-                            // Extract the BMP header and pixel data
-                            int headerSize = Marshal.SizeOf(typeof(BMPHeader));
-                            BMPHeader header;
-                            byte[] pixelData = new byte[bmpData.Length - headerSize];
-
-                            using (var reader = new BinaryReader(new MemoryStream(bmpData)))
-                            {
-                                IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
-                                Marshal.Copy(reader.ReadBytes(headerSize), 0, headerPtr, headerSize);
-                                header = Marshal.PtrToStructure<BMPHeader>(headerPtr);
-                                Marshal.FreeHGlobal(headerPtr);
-
-                                reader.Read(pixelData, 0, pixelData.Length);
-                            }
-
-                            // Step 4: Allocate memory for the output pixel data
-                            byte[] outputData = new byte[pixelData.Length];
-
-                            GCHandle headerHandle = GCHandle.Alloc(header, GCHandleType.Pinned);
-                            GCHandle pixelDataHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
-                            GCHandle fileDataHandle = GCHandle.Alloc(fileData, GCHandleType.Pinned);
-                            GCHandle outputDataHandle = GCHandle.Alloc(outputData, GCHandleType.Pinned);
-
-                            try
-                            {
-                                SteganographyWrapper.hideFile(
-                                    pixelDataHandle.AddrOfPinnedObject(),
-                                    (uint)pixelData.Length,
-                                    fileName,
-                                    fileDataHandle.AddrOfPinnedObject(),
-                                    (uint)fileData.Length,
-                                    outputDataHandle.AddrOfPinnedObject()
-                                );
-                            }
-                            finally
-                            {
-                                headerHandle.Free();
-                                pixelDataHandle.Free();
-                                fileDataHandle.Free();
-                                outputDataHandle.Free();
-                            }
-
-                            // Step 6: Save the modified image
-                            using (var outputStream = new MemoryStream())
-                            {
-                                outputStream.Write(bmpData, 0, headerSize); // Write the header
-                                outputStream.Write(outputData, 0, outputData.Length); // Write the modified pixel data
-
-                                using (var outputImage = Image.FromStream(outputStream))
-                                {
-                                    using (SaveFileDialog saveDialog = new SaveFileDialog())
-                                    {
-                                        saveDialog.Filter = "Bitmap Files (*.bmp)|*.bmp";
-                                        saveDialog.Title = "Save the stego image";
-                                        saveDialog.FileName = Path.GetFileNameWithoutExtension(inputPath) + "_stego.bmp";
-
-                                        if (saveDialog.ShowDialog() == DialogResult.OK)
-                                        {
-                                            string outputPath = saveDialog.FileName;
-                                            outputImage.Save(outputPath, System.Drawing.Imaging.ImageFormat.Bmp);
-                                            LogActivity($"File hidden successfully! Image saved at: {outputPath}");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogActivity($"Error: {ex.Message}");
-            }
-        }
-
+      
         private void rdbMessage_CheckedChanged(object sender, EventArgs e)
         {
             if (rdbMessage.Checked)
@@ -844,7 +875,10 @@ namespace interfata
             currentMode = OperationMode.Message;
             originalImage = null;
             modifiedImage = null;
-
+            textboxShuffle.Text = Constants.DEFAULT_SHUFFLE_TEXT;
+            textboxShuffle.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
+            textboxEncryptionKey.Text= Constants.DEFAULT_ENCRYPTION_TEXT;
+            textboxEncryptionKey.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
             // Reset capacity info
             lblCapacityInfo.Text = string.Empty;
 
@@ -852,5 +886,40 @@ namespace interfata
             LogActivity("Application reset to initial state.");
         }
 
+        private void textboxShuffle_Enter(object sender, EventArgs e)
+        {
+            if(textboxShuffle.Text == Constants.DEFAULT_SHUFFLE_TEXT)
+            {
+                textboxShuffle.Text = string.Empty;
+                textboxShuffle.ForeColor = Color.Black; // Reset text color to default
+            }
+        }
+
+        private void textboxShuffle_Leave(object sender, EventArgs e)
+        {
+            if(string.IsNullOrWhiteSpace(textboxShuffle.Text))
+            {
+                textboxShuffle.Text = Constants.DEFAULT_SHUFFLE_TEXT;
+                textboxShuffle.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
+            }
+        }
+
+        private void textboxEncryptionKey_Enter(object sender, EventArgs e)
+        {
+            if (textboxEncryptionKey.Text == Constants.DEFAULT_ENCRYPTION_TEXT)
+            {
+                textboxEncryptionKey.Text = string.Empty;
+                textboxEncryptionKey.ForeColor = Color.Black; // Reset text color to default
+            }
+        }
+
+        private void textboxEncryptionKey_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textboxEncryptionKey.Text))
+            {
+                textboxEncryptionKey.Text = Constants.DEFAULT_ENCRYPTION_TEXT;
+                textboxEncryptionKey.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
+            }
+        }
     }
 }
