@@ -58,6 +58,8 @@ namespace interfata
             this.progressBarCompare = new System.Windows.Forms.ProgressBar();
             this.textboxShuffle = new System.Windows.Forms.TextBox();
             this.textboxEncryptionKey = new System.Windows.Forms.TextBox();
+            this.labeSaveOutput = new System.Windows.Forms.Label();
+            this.cmbOutputFormat = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModified)).BeginInit();
             this.grpOperationMode.SuspendLayout();
@@ -321,12 +323,34 @@ namespace interfata
             this.textboxEncryptionKey.Enter += new System.EventHandler(this.textboxEncryptionKey_Enter);
             this.textboxEncryptionKey.Leave += new System.EventHandler(this.textboxEncryptionKey_Leave);
             // 
+            // labeSaveOutput
+            // 
+            this.labeSaveOutput.AutoSize = true;
+            this.labeSaveOutput.Location = new System.Drawing.Point(44, 210);
+            this.labeSaveOutput.Name = "labeSaveOutput";
+            this.labeSaveOutput.Size = new System.Drawing.Size(99, 16);
+            this.labeSaveOutput.TabIndex = 33;
+            this.labeSaveOutput.Text = "Save output as:";
+            // 
+            // cmbOutputFormat
+            // 
+            this.cmbOutputFormat.FormattingEnabled = true;
+            this.cmbOutputFormat.Location = new System.Drawing.Point(149, 207);
+            this.cmbOutputFormat.Name = "cmbOutputFormat";
+            this.cmbOutputFormat.Size = new System.Drawing.Size(121, 24);
+            this.cmbOutputFormat.TabIndex = 34;
+            this.cmbOutputFormat.Items.AddRange(new object[] {
+            "BMP",
+            "PNG"});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(992, 676);
+            this.Controls.Add(this.cmbOutputFormat);
+            this.Controls.Add(this.labeSaveOutput);
             this.Controls.Add(this.textboxEncryptionKey);
             this.Controls.Add(this.textboxShuffle);
             this.Controls.Add(this.progressBarCompare);
@@ -394,6 +418,8 @@ namespace interfata
         private ProgressBar progressBarCompare;
         private TextBox textboxShuffle;
         private TextBox textboxEncryptionKey;
+        private Label labeSaveOutput;
+        private ComboBox cmbOutputFormat;
     }
 }
 

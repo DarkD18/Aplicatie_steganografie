@@ -177,16 +177,18 @@ __declspec(dllexport) void extractFile(
     uint32_t file_data_bufsize,
     uint32_t* file_size)
 {
-    uint32_t bit_idx = 0;
+    uint32_t  bit_idx = 0;
+    char      magic[4] = { 0 };
+    uint8_t   method = 0;
+    uint32_t  name_len = 0;
+    uint32_t  extracted_size = 0;
     // Decode magic header
-    char magic[4];
     for (int i = 0; i < 4; ++i) {
         magic[i] = 0;
         for (int b = 0; b < 8; ++b, ++bit_idx)
             magic[i] |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
     }
     // Decode method byte
-    uint8_t method = 0;
     for (int b = 0; b < 8; ++b, ++bit_idx)
         method |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
 
@@ -196,7 +198,6 @@ __declspec(dllexport) void extractFile(
     }
 
     // Decode name length
-    uint32_t name_len = 0;
     for (int b = 0; b < 32; ++b, ++bit_idx)
         name_len |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
     if (name_len >= file_name_bufsize) name_len = file_name_bufsize - 1;
@@ -209,21 +210,32 @@ __declspec(dllexport) void extractFile(
     }
     file_name[name_len] = '\0';
 
-    // Decode file size
-    *file_size = 0;
-    for (int b = 0; b < 32; ++b, ++bit_idx)
-        *file_size |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
-    if (*file_size > file_data_bufsize) {
+    // 5) Decode file size
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t pix = bit_idx;
+        if (pix * 3 + 2 >= pixel_data_size) break;
+        extracted_size |= (pixel_data[pix * 3 + 2] & 1) << b;
+    }
+    if (extracted_size > file_data_bufsize) {
         MessageBoxA(NULL, "Error: Extracted file size exceeds buffer capacity.", "ERROR", MB_OK);
         return;
     }
-    *file_size = file_data_bufsize;
-    // Decode file content
-    for (uint32_t i = 0; i < *file_size; ++i) {
+
+    // 6) Decode the file content *only* up to extracted_size
+    for (uint32_t i = 0; i < extracted_size; ++i) {
         file_data[i] = 0;
-        for (int b = 0; b < 8; ++b, ++bit_idx)
-            file_data[i] |= (pixel_data[bit_idx * 3 + 2] & 1) << b;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pix = bit_idx;
+            if (pix * 3 + 2 >= pixel_data_size) {
+                // truncated content
+                break;
+            }
+            file_data[i] |= (pixel_data[pix * 3 + 2] & 1) << b;
+        }
     }
+
+    // 7) Return the real size
+    *file_size = extracted_size;
 
     MessageBoxA(NULL, "File extracted successfully from the image.", "SUCCESS", MB_OK);
 }
