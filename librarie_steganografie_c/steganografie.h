@@ -30,20 +30,20 @@ __declspec(dllexport) void extract_file_multichannel(
     uint32_t* file_size);
 #pragma endregion
 #pragma region shuffle_standard
-__declspec(dllexport) void hideMessagePassword(
+__declspec(dllexport) void hide_message_shuffle(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
     const uint8_t* message, const uint8_t* password,
     uint8_t* output_data);
-__declspec(dllexport) void revealMessagePassword(
+__declspec(dllexport) void reveal_message_shuffle(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
     const uint8_t* password,
     uint8_t* output, uint32_t max_len);
-__declspec(dllexport) void hideFilePassword(
+__declspec(dllexport) void hide_file_shuffle(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
     const uint8_t* file_name, const uint8_t* file_data, uint32_t file_size,
     const uint8_t* password,
     uint8_t* output_data);
-__declspec(dllexport) void extractFilePassword(
+__declspec(dllexport) void extract_file_shuffle(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
     const uint8_t* password,
     uint8_t* file_name, uint32_t file_name_bufsize,
@@ -51,19 +51,19 @@ __declspec(dllexport) void extractFilePassword(
     uint32_t* file_size);
 #pragma endregion
 #pragma region shuffle_multichannel
-__declspec(dllexport) void hideMessageMultichannelPassword(
+__declspec(dllexport) void hide_message_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* message,
     const uint8_t* password,
     uint8_t* output_data);
-__declspec(dllexport) void revealMessageMultichannelPassword(
+__declspec(dllexport) void reveal_message_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* password,
     uint8_t* output,
     uint32_t       max_len);
-__declspec(dllexport) void hideFileMultichannelPassword(
+__declspec(dllexport) void hide_file_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* file_name,
@@ -71,7 +71,7 @@ __declspec(dllexport) void hideFileMultichannelPassword(
     uint32_t       file_size,
     const uint8_t* password,
     uint8_t* output_data);
-__declspec(dllexport) void extractFileMultichannelPassword(
+__declspec(dllexport) void extract_file_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* password,

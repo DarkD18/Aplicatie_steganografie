@@ -85,7 +85,7 @@ namespace interfata
         /******************************** Standard LSB shuffle DLL includes ***************************************/
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-            public static extern void hideMessagePassword(
+            public static extern void hide_message_shuffle(
         IntPtr pixelData,
         uint pixelDataSize,
         [MarshalAs(UnmanagedType.LPStr)] string message,
@@ -94,7 +94,7 @@ namespace interfata
         );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void revealMessagePassword(
+        public static extern void reveal_message_shuffle(
         IntPtr pixelData,
         uint pixelDataSize,
         [MarshalAs(UnmanagedType.LPStr)] string password,
@@ -103,7 +103,7 @@ namespace interfata
         );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-                public static extern void hideFilePassword(
+         public static extern void hide_file_shuffle(
             IntPtr pixelData,
             uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] string fileName,
@@ -114,7 +114,7 @@ namespace interfata
         );
         
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void extractFilePassword(
+        public static extern void extract_file_shuffle(
             IntPtr pixelData,
             uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] string password,
@@ -127,7 +127,7 @@ namespace interfata
 
         /******************************** Multuchannel LSB shuffle DLL includes ***************************************/
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void hideMessageMultichannelPassword(
+        public static extern void hide_message_multichannel_shuffle(
            IntPtr pixelData,
            uint pixelDataSize,
            [MarshalAs(UnmanagedType.LPStr)] string message,
@@ -136,7 +136,7 @@ namespace interfata
        );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void revealMessageMultichannelPassword(
+        public static extern void reveal_message_multichannel_shuffle(
             IntPtr pixelData,
             uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] string password,
@@ -145,7 +145,7 @@ namespace interfata
         );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void hideFileMultichannelPassword(
+        public static extern void hide_file_multichannel_shuffle(
             IntPtr pixel_data, uint pixel_data_size,
             [MarshalAs(UnmanagedType.LPStr)] string file_name,
             IntPtr file_data, uint file_size,
@@ -154,7 +154,7 @@ namespace interfata
         );
 
         [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void extractFileMultichannelPassword(
+        public static extern void extract_file_multichannel_shuffle(
             IntPtr pixelData,
             uint pixelDataSize,
             [MarshalAs(UnmanagedType.LPStr)] string password,

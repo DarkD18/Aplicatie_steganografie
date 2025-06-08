@@ -382,7 +382,7 @@ __declspec(dllexport) void extract_file_multichannel(
 
 #pragma region shuffle_standard
 
-__declspec(dllexport) void hideMessagePassword(
+__declspec(dllexport) void hide_message_shuffle(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
     const uint8_t* message, const uint8_t* password,
     uint8_t* output_data)
@@ -417,7 +417,7 @@ __declspec(dllexport) void hideMessagePassword(
     MessageBoxA(NULL, "Message hidden successfully with password protection.", "SUCCESS", MB_OK);
 }
 
-__declspec(dllexport) void revealMessagePassword(
+__declspec(dllexport) void reveal_message_shuffle(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
     const uint8_t* password,
     uint8_t* output, uint32_t max_len)
@@ -447,7 +447,7 @@ __declspec(dllexport) void revealMessagePassword(
     free(pixel_order);
 }
 
-__declspec(dllexport) void hideFilePassword(
+__declspec(dllexport) void hide_file_shuffle(
     const uint8_t* pixel_data,
     uint32_t        pixel_data_size,
     const uint8_t* file_name,
@@ -539,7 +539,7 @@ cleanup:
 }
 
 
-__declspec(dllexport) void extractFilePassword(
+__declspec(dllexport) void extract_file_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* password,
@@ -630,7 +630,7 @@ __declspec(dllexport) void extractFilePassword(
 
 #pragma region shuffle_multichannel
 
-__declspec(dllexport) void hideMessageMultichannelPassword(
+__declspec(dllexport) void hide_message_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* message,
@@ -665,7 +665,7 @@ __declspec(dllexport) void hideMessageMultichannelPassword(
     MessageBoxA(NULL, "Message hidden (multichannel + shuffle).", "SUCCESS", MB_OK);
 }
 
-__declspec(dllexport) void revealMessageMultichannelPassword(
+__declspec(dllexport) void reveal_message_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* password,
@@ -699,7 +699,7 @@ __declspec(dllexport) void revealMessageMultichannelPassword(
     MessageBoxA(NULL, "Message revealed (multichannel + shuffle).", "SUCCESS", MB_OK);
 }
 
-__declspec(dllexport) void hideFileMultichannelPassword(
+__declspec(dllexport) void hide_file_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* file_name,
@@ -777,7 +777,7 @@ __declspec(dllexport) void hideFileMultichannelPassword(
     MessageBoxA(NULL, "File hidden (multichannel + shuffle).", "SUCCESS", MB_OK);
 }
 
-__declspec(dllexport) void extractFileMultichannelPassword(
+__declspec(dllexport) void extract_file_multichannel_shuffle(
     const uint8_t* pixel_data,
     uint32_t       pixel_data_size,
     const uint8_t* password,

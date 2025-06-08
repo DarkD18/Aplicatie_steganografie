@@ -257,7 +257,7 @@ namespace interfata
                             if (password.Length != 0)
                             {
                                 // Call the single-channel hiding function
-                                SteganographyWrapper.hideMessagePassword(
+                                SteganographyWrapper.hide_message_shuffle(
                                     pixelDataHandle.AddrOfPinnedObject(),
                                     (uint)pixelData.Length,
                                     message,
@@ -279,7 +279,7 @@ namespace interfata
                         {
                             if (password.Length != 0)
                             {
-                                SteganographyWrapper.hideMessageMultichannelPassword(
+                                SteganographyWrapper.hide_message_multichannel_shuffle(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 message,
@@ -392,7 +392,7 @@ namespace interfata
                             {
                                 if (password.Length != 0)
                                 {
-                                    SteganographyWrapper.hideFilePassword(
+                                    SteganographyWrapper.hide_file_shuffle(
                                     pixelDataHandle.AddrOfPinnedObject(),
                                     (uint)pixelData.Length,
                                     fileName,
@@ -419,7 +419,7 @@ namespace interfata
                             {
                                 if (password.Length != 0)
                                 {
-                                    SteganographyWrapper.hideFileMultichannelPassword(
+                                    SteganographyWrapper.hide_file_multichannel_shuffle(
                                       pixelDataHandle.AddrOfPinnedObject(),
                                      (uint)pixelData.Length,
                                       fileName,
@@ -538,7 +538,7 @@ namespace interfata
                         {
                             if (password.Length != 0)
                             {
-                                SteganographyWrapper.revealMessagePassword(
+                                SteganographyWrapper.reveal_message_shuffle(
                                     pixelDataHandle.AddrOfPinnedObject(),
                                    (uint)pixelData.Length,
                                     password,
@@ -561,7 +561,7 @@ namespace interfata
                         {
                             if (password.Length != 0)
                             {                                // Call the multi-channel extraction function
-                                SteganographyWrapper.revealMessageMultichannelPassword(
+                                SteganographyWrapper.reveal_message_multichannel_shuffle(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 password,
@@ -649,7 +649,7 @@ namespace interfata
                             if (password.Length != 0)
                             {
                                 // Call the single-channel hiding function with password
-                                SteganographyWrapper.extractFilePassword(
+                                SteganographyWrapper.extract_file_shuffle(
                                    pixelDataHandle.AddrOfPinnedObject(),
                                    (uint)pixelData.Length,
                                    password,
@@ -678,7 +678,7 @@ namespace interfata
                         {
                             if (password.Length != 0)
                             {
-                                SteganographyWrapper.extractFileMultichannelPassword(
+                                SteganographyWrapper.extract_file_multichannel_shuffle(
                                 pixelDataHandle.AddrOfPinnedObject(),
                                 (uint)pixelData.Length,
                                 password,
