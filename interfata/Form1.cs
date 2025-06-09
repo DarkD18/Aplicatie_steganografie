@@ -99,8 +99,7 @@ namespace interfata
             // Show/hide controls based on mode
             txtMessage.Visible = mode == OperationMode.Message;
             label3.Visible = mode == OperationMode.Message;
-            txtOutput.Visible = mode == OperationMode.Message;
-            txtOutput_path.Visible = mode == OperationMode.File;
+            //txtOutput_path.Visible = mode == OperationMode.File;
             // Update UI text
             btnHideMessage.Text = mode == OperationMode.Message ? "Hide Message" : "Hide File";
             btnRevealMessage.Text = mode == OperationMode.Message ? "Extract Message" : "Extract File";
@@ -265,6 +264,7 @@ namespace interfata
             try
             {
                 var inputPath = txtInputPath.Text;
+                string password = get_shuffle_key();
                 if (string.IsNullOrWhiteSpace(inputPath)) { LogActivity("Pick a WAV first"); return; }
 
                 // 1) Read header + samples
@@ -291,12 +291,25 @@ namespace interfata
                 var hO = GCHandle.Alloc(outputData, GCHandleType.Pinned);
                 try
                 {
-                    SteganographyWrapper.hideFileInWav(
-                        hW.AddrOfPinnedObject(), (uint)wavData.Length,
-                        payloadName,
-                        hP.AddrOfPinnedObject(), (uint)payload.Length,
-                        hO.AddrOfPinnedObject()
-                    );
+                    if (password.Length > 0)
+                    {
+                        SteganographyWrapper.hideFileShuffleInWav(
+                            hW.AddrOfPinnedObject(), (uint)wavData.Length,
+                            payloadName,
+                            hP.AddrOfPinnedObject(), (uint)payload.Length,
+                            password,  
+                            hO.AddrOfPinnedObject()
+                        );
+                    }
+                    else
+                    {
+                        SteganographyWrapper.hideFileInWav(
+                            hW.AddrOfPinnedObject(), (uint)wavData.Length,
+                            payloadName,
+                            hP.AddrOfPinnedObject(), (uint)payload.Length,
+                            hO.AddrOfPinnedObject()
+                        );
+                    }
                 }
                 finally { hW.Free(); hP.Free(); hO.Free(); }
 
@@ -338,6 +351,7 @@ namespace interfata
                 // 1) sanity checks
                 var inputPath = txtInputPath.Text;
                 var message = txtMessage.Text;
+                string password = get_shuffle_key();
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
                     LogActivity("Please select a WAV first!");
@@ -371,12 +385,25 @@ namespace interfata
                 var hOut = GCHandle.Alloc(outputData, GCHandleType.Pinned);
                 try
                 {
-                    SteganographyWrapper.hideMessageInWav(
+                    if (password.Length > 0)
+                    {
+                        SteganographyWrapper.hideMessageShuffleInWav(
                         hIn.AddrOfPinnedObject(),
                         (uint)wavData.Length,
                         message,
+                        password,
                         hOut.AddrOfPinnedObject()
                     );
+                    }
+                    else
+                    {
+                        SteganographyWrapper.hideMessageInWav(
+                            hIn.AddrOfPinnedObject(),
+                            (uint)wavData.Length,
+                            message,
+                            hOut.AddrOfPinnedObject()
+                        );
+                    }
                 }
                 finally
                 {
@@ -705,6 +732,8 @@ namespace interfata
             try
             {
                 string inputPath = txtInputPath.Text;
+                string password = get_shuffle_key();
+
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
                     LogActivity("Please select a stego WAV!");
@@ -724,15 +753,31 @@ namespace interfata
                 var hPay = GCHandle.Alloc(payloadBuf, GCHandleType.Pinned);
                 try
                 {
-                    SteganographyWrapper.extractFileFromWav(
-                        hWav.AddrOfPinnedObject(),
-                        (uint)wavData.Length,
-                        nameBuf,
-                        (uint)nameBuf.Capacity,
-                        hPay.AddrOfPinnedObject(),
-                        (uint)payloadBuf.Length,
-                        out extractedSize
-                    );
+                    if (!string.IsNullOrEmpty(password))
+                    {
+                        SteganographyWrapper.extractFileShuffleFromWav(
+                            hWav.AddrOfPinnedObject(),
+                            (uint)wavData.Length,
+                            password,
+                            nameBuf,
+                            (uint)nameBuf.Capacity,
+                            hPay.AddrOfPinnedObject(),
+                            (uint)payloadBuf.Length,
+                            out extractedSize
+                        );
+                    }
+                    else
+                    {
+                        SteganographyWrapper.extractFileFromWav(
+                            hWav.AddrOfPinnedObject(),
+                            (uint)wavData.Length,
+                            nameBuf,
+                            (uint)nameBuf.Capacity,
+                            hPay.AddrOfPinnedObject(),
+                            (uint)payloadBuf.Length,
+                            out extractedSize
+                        );
+                    }
                 }
                 finally
                 {
@@ -740,25 +785,41 @@ namespace interfata
                     hPay.Free();
                 }
 
-                // 4) Write the extracted payload with its original name
+                // 4) If nothing valid was decoded, warn and bail out
+                string extractedName = nameBuf.ToString();
+                if (string.IsNullOrWhiteSpace(extractedName) || extractedSize == 0)
+                {
+                    MessageBox.Show(
+                        "No hidden file found (either none was embedded, or the password is wrong).",
+                        "Nothing to Extract",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    return;
+                }
+
+                // 5) Otherwise write out the real file
                 string outFile = Path.Combine(
                     Path.GetDirectoryName(inputPath),
-                    nameBuf.ToString()
+                    extractedName
                 );
                 File.WriteAllBytes(outFile, payloadBuf.Take((int)extractedSize).ToArray());
                 LogActivity($"File extracted from WAV to: {outFile}");
+                txtOutput.Text = outFile;
             }
             catch (Exception ex)
             {
                 LogActivity($"Error in extractFileFromWav: {ex.Message}");
             }
         }
+
         private void extract_message_wav()
         {
             try
             {
                 // 1) sanity check
                 var inputPath = txtInputPath.Text;
+                string password = get_shuffle_key();
                 if (string.IsNullOrWhiteSpace(inputPath))
                 {
                     LogActivity("Please select a stego‐WAV first!");
@@ -774,12 +835,25 @@ namespace interfata
                 var hIn = GCHandle.Alloc(wavData, GCHandleType.Pinned);
                 try
                 {
-                    SteganographyWrapper.revealMessageFromWav(
-                        hIn.AddrOfPinnedObject(),
-                        (uint)wavData.Length,
-                        sb,
-                        (uint)sb.Capacity
-                    );
+                    if (password.Length > 0)
+                    {
+                        SteganographyWrapper.revealMessageShuffleFromWav(
+                            hIn.AddrOfPinnedObject(),
+                            (uint)wavData.Length,
+                            password,
+                            sb,
+                            (uint)sb.Capacity
+                        );
+                    }
+                    else
+                    {
+                        SteganographyWrapper.revealMessageFromWav(
+                            hIn.AddrOfPinnedObject(),
+                            (uint)wavData.Length,
+                            sb,
+                            (uint)sb.Capacity
+                        );
+                    }
                 }
                 finally
                 {
@@ -1022,7 +1096,7 @@ namespace interfata
                         string outputPath = Path.Combine(Path.GetDirectoryName(inputPath), fileName.ToString());
                         File.WriteAllBytes(outputPath, fileData.Take((int)fileSize).ToArray());
                         LogActivity($"File extracted to: {outputPath}");
-                        txtOutput_path.Text = outputPath;
+                        txtOutput.Text = outputPath;
                 }
                 finally
                 {
@@ -1173,6 +1247,7 @@ namespace interfata
                 SetOperationMode(OperationMode.Message);
                 label5.Text = "Hidden message";
             }
+            update_operation_type();
         }
 
         private void rdbFile_CheckedChanged(object sender, EventArgs e)
@@ -1184,6 +1259,7 @@ namespace interfata
                 labeSaveOutput.Visible = false;
                 label5.Text = "Extracted file path";
             }
+            update_operation_type();
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -1202,6 +1278,7 @@ namespace interfata
             cmbMethod.SelectedIndex = 0; // Reset to the first method (StandardLSB)
             rdbMessage.Checked = true;  // Reset to "Hide Message" mode
             cmbOutputFormat.SelectedIndex = 0;
+            cmbType.SelectedIndex = 0; // Reset to Image type
             // Reset internal variables
             currentMethod = SteganographyMethod.StandardLSB;
             currentMode = OperationMode.Message;

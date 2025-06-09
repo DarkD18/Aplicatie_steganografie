@@ -164,7 +164,7 @@ namespace interfata
             uint fileDataBufsize,
             ref uint fileSize
         );
-        /******************************** WAV lsb shuffle DLL includes ***************************************/
+        /******************************** WAV lsb  DLL includes ***************************************/
         const string Dll = "librarie_steganografie_c.dll";
 
         [DllImport(Dll, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -201,6 +201,41 @@ namespace interfata
             uint fileNameBufsize,
             IntPtr fileData,
             uint fileDataBufsize,
+            out uint fileSize
+        );
+
+        /******************************** WAV lsb shuffle DLL includes ***************************************/
+        [DllImport(Dll, EntryPoint = "hideMessageShuffleInWav", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void hideMessageShuffleInWav(
+       IntPtr wavData, uint wavDataSize,
+       [MarshalAs(UnmanagedType.LPStr)] string message,
+       [MarshalAs(UnmanagedType.LPStr)] string password,
+       IntPtr outputData
+         );
+
+        [DllImport(Dll, EntryPoint = "revealMessageShuffleFromWav", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void revealMessageShuffleFromWav(
+            IntPtr wavData, uint wavDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder output ,
+            uint maxLen
+        );
+
+        [DllImport(Dll, EntryPoint = "hideFileShuffleInWav", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void hideFileShuffleInWav(
+            IntPtr wavData, uint wavDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string fileName,
+            IntPtr fileData, uint fileSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            IntPtr outputData
+        );
+
+        [DllImport(Dll, EntryPoint = "extractFileShuffleFromWav", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void extractFileShuffleFromWav(
+            IntPtr wavData, uint wavDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            StringBuilder fileName, uint fileNameBufsize,
+            IntPtr fileData, uint fileDataBufsize,
             out uint fileSize
         );
     }

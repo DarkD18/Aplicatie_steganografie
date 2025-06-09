@@ -1209,3 +1209,343 @@ void extractFileFromWav(
 }
 
 #pragma endregion
+
+#pragma region wav_lsb_shuffle
+
+// forward from your image code:
+extern uint32_t  password_to_seed(const uint8_t* pw);
+extern void      generate_pixel_order(uint32_t* order, uint32_t n, uint32_t seed);
+
+__declspec(dllexport)
+void hideMessageShuffleInWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* message,
+    const uint8_t* password,
+    uint8_t* output_data
+) {
+    // 1) basic checks
+    if (!wav_data || !message || !password || !output_data) ERR("Null pointer provided.");
+    if (wav_data_size < 44)      ERR("Data too small to be a valid WAV.");
+    if (memcmp(wav_data, "RIFF", 4) != 0 || memcmp(wav_data + 8, "WAVE", 4) != 0)
+        ERR("Not a valid RIFF/WAVE file.");
+
+    // 2) find fmt & data
+    uint32_t offset = 12, data_off = 0, data_sz = 0;
+    uint16_t audio_format = 0, bits_per_sample = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t next = offset + 8 + sz + (sz & 1);
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0) {
+            if (sz < 16) ERR("Malformed fmt chunk.");
+            audio_format = read_le16(wav_data + offset + 8 + 0);
+            bits_per_sample = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8;
+            data_sz = sz;
+            break;
+        }
+        if (next <= offset || next > wav_data_size) break;
+        offset = next;
+    }
+    if (!data_off)              ERR("No data chunk found.");
+    if (audio_format != 1)      ERR("Only PCM WAV supported.");
+    if (bits_per_sample != 8 && bits_per_sample != 16)
+        ERR("Only 8- or 16-bit PCM supported.");
+
+    // 3) capacity check
+    uint32_t bps = bits_per_sample / 8;
+    uint32_t total_samples = data_sz / bps;
+    uint32_t msg_len = (uint32_t)strlen((const char*)message) + 1;
+    if (msg_len * 8 > total_samples)
+        ERR("Message too long for this WAV.");
+
+    // 4) copy entire WAV -> output
+    memcpy(output_data, wav_data, wav_data_size);
+
+    // 5) generate shuffle order
+    uint32_t seed = password_to_seed(password);
+    uint32_t* order = (uint32_t*)malloc(total_samples * sizeof(uint32_t));
+    if (!order) ERR("Out of memory.");
+    generate_pixel_order(order, total_samples, seed);
+
+    // 6) embed bits in LSB of first byte of each sample
+    uint32_t bit_idx = 0;
+    for (uint32_t i = 0; i < msg_len; ++i) {
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            uint8_t  bit = (message[i] >> b) & 1;
+            output_data[pos] = (output_data[pos] & ~1) | bit;
+        }
+    }
+
+    free(order);
+    MessageBoxA(NULL, "Message hidden successfully in WAV (shuffled).", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport)
+void revealMessageShuffleFromWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* password,
+    uint8_t* output,
+    uint32_t       max_len
+) {
+    if (!wav_data || !password || !output) ERR("Null pointer provided.");
+    if (wav_data_size < 44)      ERR("Data too small to be a valid WAV.");
+    if (memcmp(wav_data, "RIFF", 4) != 0 || memcmp(wav_data + 8, "WAVE", 4) != 0)
+        ERR("Not a valid RIFF/WAVE file.");
+
+    // find fmt & data
+    uint32_t offset = 12, data_off = 0, data_sz = 0;
+    uint16_t fmt = 0, bps16 = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t nxt = offset + 8 + sz + (sz & 1);
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0 && sz >= 16) {
+            fmt = read_le16(wav_data + offset + 8);
+            bps16 = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8; data_sz = sz; break;
+        }
+        if (nxt <= offset || nxt > wav_data_size) break;
+        offset = nxt;
+    }
+    if (!data_off)           ERR("No data chunk found.");
+    if (fmt != 1)              ERR("Only PCM WAV supported.");
+    if (bps16 != 8 && bps16 != 16)
+        ERR("Only 8- or 16-bit PCM supported.");
+
+    uint32_t bps = bps16 / 8;
+    uint32_t total_samples = data_sz / bps;
+
+    // build same order
+    uint32_t seed = password_to_seed(password);
+    uint32_t* order = (uint32_t*)malloc(total_samples * sizeof(uint32_t));
+    if (!order) ERR("Out of memory.");
+    generate_pixel_order(order, total_samples, seed);
+
+    // extract
+    uint32_t bit_idx = 0;
+    for (uint32_t i = 0; i < max_len; ++i) {
+        output[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            if (bit_idx >= total_samples) { output[i] = '\0'; free(order); return; }
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            output[i] |= (wav_data[pos] & 1) << b;
+        }
+        if (output[i] == '\0') break;
+    }
+    output[max_len - 1] = '\0';
+    free(order);
+    MessageBoxA(NULL, "Message revealed successfully from WAV (shuffled).", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport)
+void hideFileShuffleInWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* file_name,
+    const uint8_t* file_data,
+    uint32_t       file_size,
+    const uint8_t* password,
+    uint8_t* output_data
+) {
+    // reuse your existing file-in-WAV scan + validation
+    if (!wav_data || !file_name || !file_data || !password || !output_data)
+        ERR("Null pointer provided.");
+    if (wav_data_size < 44) ERR("Data too small to be a valid WAV.");
+    if (memcmp(wav_data, "RIFF", 4) || memcmp(wav_data + 8, "WAVE", 4))
+        ERR("Not a valid WAV.");
+
+    // find data chunk
+    uint32_t offset = 12, data_off = 0, data_sz = 0;
+    uint16_t fmt = 0, bps16 = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t nxt = offset + 8 + sz + (sz & 1);
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0 && sz >= 16) {
+            fmt = read_le16(wav_data + offset + 8);
+            bps16 = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8; data_sz = sz; break;
+        }
+        if (nxt <= offset || nxt > wav_data_size) break;
+        offset = nxt;
+    }
+    if (!data_off) ERR("No data chunk found.");
+    if (fmt != 1)    ERR("Only PCM WAV supported.");
+    if (bps16 != 8 && bps16 != 16)
+        ERR("Only 8- or 16-bit PCM supported.");
+
+    uint32_t bps = bps16 / 8;
+    uint32_t total_samples = data_sz / bps;
+    uint32_t name_len = (uint32_t)strlen((const char*)file_name);
+    uint64_t needed_bits = (4 + 1) * 8 + 32 + (uint64_t)name_len * 8 + 32 + (uint64_t)file_size * 8;
+    if (needed_bits > total_samples)
+        ERR("Filename+payload too large for this WAV.");
+
+    // copy WAV -> output
+    memcpy(output_data, wav_data, wav_data_size);
+
+    // build shuffle order
+    uint32_t seed = password_to_seed(password);
+    uint32_t* order = (uint32_t*)malloc(total_samples * sizeof(uint32_t));
+    if (!order) ERR("Out of memory.");
+    generate_pixel_order(order, total_samples, seed);
+
+    // header = "STGF"+method(0x03)
+    const char magic[4] = { 'S','T','G','F' };
+    const uint8_t method = 0x03;
+    uint64_t bit_idx = 0;
+    // a) magic+method
+    for (int i = 0; i < 4 + 1; ++i) {
+        uint8_t v = (i < 4 ? magic[i] : method);
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            output_data[pos] = (output_data[pos] & ~1) | ((v >> b) & 1);
+        }
+    }
+    // b) name length
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t sample = order[bit_idx];
+        uint32_t pos = data_off + sample * bps;
+        output_data[pos] = (output_data[pos] & ~1) | (((uint32_t)name_len >> b) & 1);
+    }
+    // c) filename bytes
+    for (uint32_t i = 0; i < name_len; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            output_data[pos] = (output_data[pos] & ~1) | (((uint8_t*)file_name)[i] >> b & 1);
+        }
+    // d) payload size
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t sample = order[bit_idx];
+        uint32_t pos = data_off + sample * bps;
+        output_data[pos] = (output_data[pos] & ~1) | ((file_size >> b) & 1);
+    }
+    // e) payload bytes
+    for (uint32_t i = 0; i < file_size; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            output_data[pos] = (output_data[pos] & ~1) | (((uint8_t*)file_data)[i] >> b & 1);
+        }
+
+    free(order);
+    MessageBoxA(NULL, "File hidden successfully in WAV (shuffled).", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport)
+void extractFileShuffleFromWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* password,
+    uint8_t* file_name,
+    uint32_t       file_name_bufsize,
+    uint8_t* file_data,
+    uint32_t       file_data_bufsize,
+    uint32_t* file_size
+) {
+    if (!wav_data || !password || !file_name || !file_data || !*file_size)
+        ERR("Null pointer provided.");
+    if (wav_data_size < 44) ERR("Data too small to be a valid WAV.");
+    if (memcmp(wav_data, "RIFF", 4) || memcmp(wav_data + 8, "WAVE", 4))
+        ERR("Not a valid WAV.");
+
+    // find data chunk
+    uint32_t offset = 12, data_off = 0, data_sz = 0;
+    uint16_t fmt = 0, bps16 = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t nxt = offset + 8 + sz + (sz & 1);
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0 && sz >= 16) {
+            fmt = read_le16(wav_data + offset + 8);
+            bps16 = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8; data_sz = sz; break;
+        }
+        if (nxt <= offset || nxt > wav_data_size) break;
+        offset = nxt;
+    }
+    if (!data_off) ERR("No data chunk found.");
+    if (fmt != 1)    ERR("Only PCM WAV supported.");
+    if (bps16 != 8 && bps16 != 16) ERR("Only 8- or 16-bit PCM supported.");
+
+    uint32_t bps = bps16 / 8;
+    uint32_t total_samples = data_sz / bps;
+
+    // build same shuffle
+    uint32_t seed = password_to_seed(password);
+    uint32_t* order = (uint32_t*)malloc(total_samples * sizeof(uint32_t));
+    if (!order) ERR("Out of memory.");
+    generate_pixel_order(order, total_samples, seed);
+
+    // 1) read magic+method
+    uint8_t hdr5[5] = { 0 };
+    uint64_t bit_idx = 0;
+    for (int i = 0; i < 5; ++i) {
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            hdr5[i] |= (wav_data[pos] & 1) << b;
+        }
+    }
+    if (memcmp(hdr5, "STGF", 4) || hdr5[4] != 0x03) {
+        ERR("No shuffled STGF payload or wrong password.");
+    }
+    // 2) name length
+    uint32_t name_len = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t sample = order[bit_idx];
+        uint32_t pos = data_off + sample * bps;
+        name_len |= (wav_data[pos] & 1) << b;
+    }
+    if (name_len >= file_name_bufsize) name_len = file_name_bufsize - 1;
+    // 3) filename
+    for (uint32_t i = 0; i < name_len; ++i) {
+        uint8_t ch = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            ch |= (wav_data[pos] & 1) << b;
+        }
+        file_name[i] = ch;
+    }
+    file_name[name_len] = '\0';
+    // 4) payload size
+    uint32_t psize = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t sample = order[bit_idx];
+        uint32_t pos = data_off + sample * bps;
+        psize |= (wav_data[pos] & 1) << b;
+    }
+    if (psize > file_data_bufsize) ERR("Buffer too small for payload.");
+    // 5) payload bytes
+    for (uint32_t i = 0; i < psize; ++i) {
+        uint8_t ch = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample = order[bit_idx];
+            uint32_t pos = data_off + sample * bps;
+            ch |= (wav_data[pos] & 1) << b;
+        }
+        file_data[i] = ch;
+    }
+    *file_size = psize;
+    free(order);
+    MessageBoxA(NULL, "File extracted successfully from WAV (shuffled).",
+        "SUCCESS", MB_OK);
+}
+#pragma endregion

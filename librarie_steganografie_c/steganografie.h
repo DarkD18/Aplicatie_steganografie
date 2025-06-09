@@ -117,4 +117,45 @@ void extractFileFromWav(
 );
 
 #pragma endregion
+#pragma region wav lsb shuffle
+__declspec(dllexport)
+void hideMessageShuffleInWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* message,
+    const uint8_t* password,
+    uint8_t* output_data
+);
+__declspec(dllexport)
+void revealMessageShuffleFromWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* password,
+    uint8_t* output,
+    uint32_t       max_len
+);
+__declspec(dllexport)
+void hideFileShuffleInWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* file_name,
+    const uint8_t* file_data,
+    uint32_t       file_size,
+    const uint8_t* password,
+    uint8_t* output_data
+);
+__declspec(dllexport)
+void extractFileShuffleFromWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* password,
+    uint8_t* file_name,
+    uint32_t       file_name_bufsize,
+    uint8_t* file_data,
+    uint32_t       file_data_bufsize,
+    uint32_t* file_size
+);
+
+
+#pragma endregion   
 #endif // STEGANOGRAFIE_H
