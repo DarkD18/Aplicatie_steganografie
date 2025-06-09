@@ -9,9 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace interfata
 {
@@ -25,6 +27,11 @@ namespace interfata
     {
         Message,
         File
+    }
+    public enum SteganographyType
+    {
+        Image,
+        Audio
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -56,10 +63,14 @@ namespace interfata
         private System.Windows.Forms.Button btnCompareImages;
         private Bitmap originalImage;
         private Bitmap modifiedImage;
+        // for audio comparison
+        private byte[] originalSamples;
+        private byte[] modifiedSamples;
         //private System.Windows.Forms.Button btnHideFile;
         //private System.Windows.Forms.Button btnExtractFile;
 
         private SteganographyMethod currentMethod = SteganographyMethod.StandardLSB;
+        private SteganographyType currentType = SteganographyType.Image;
         private OperationMode currentMode = OperationMode.Message;
         /*Global variables.*/
         long maxCapacity;
@@ -67,7 +78,7 @@ namespace interfata
         public Form1()
         {
             InitializeComponent();
-            cmbMethod.SelectedIndex = 0; 
+            cmbType.SelectedIndex = 0; 
             cmbOutputFormat.SelectedIndex = 0; 
             currentMethod = SteganographyMethod.StandardLSB;
             // Initialize UI based on mode
@@ -75,6 +86,10 @@ namespace interfata
             cmbMethod.SelectedIndexChanged += (sender, e) =>
             {
                 currentMethod = (SteganographyMethod)cmbMethod.SelectedIndex;
+            };
+            cmbType.SelectedIndexChanged += (sender, e) =>
+            {
+                currentType = (SteganographyType)cmbType.SelectedIndex;
             };
         }
         private void SetOperationMode(OperationMode mode)
@@ -84,14 +99,18 @@ namespace interfata
             // Show/hide controls based on mode
             txtMessage.Visible = mode == OperationMode.Message;
             label3.Visible = mode == OperationMode.Message;
-            label5.Visible = mode == OperationMode.Message;
             txtOutput.Visible = mode == OperationMode.Message;
             txtOutput_path.Visible = mode == OperationMode.File;
-            label_extracted_output.Visible = mode == OperationMode.File;
-
             // Update UI text
             btnHideMessage.Text = mode == OperationMode.Message ? "Hide Message" : "Hide File";
             btnRevealMessage.Text = mode == OperationMode.Message ? "Extract Message" : "Extract File";
+        }
+
+        private void update_operation_type()
+        {
+            cmbOutputFormat.Visible = currentType == SteganographyType.Image;
+            labeSaveOutput.Visible = currentType == SteganographyType.Image;
+            btnCompareImages.Text = currentType == SteganographyType.Image ? "Compare Images" : "Compare audio";
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -101,39 +120,92 @@ namespace interfata
 
         private void btnBrowseInput_Click(object sender, EventArgs e)
         {
+            // 1) Choose the right filter
+            string filter = currentType == SteganographyType.Audio
+                ? "WAV files|*.wav|All Files|*.*"
+                : "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif;*.tif|All Files|*.*";
 
+            // 2) Show dialog
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif;*.tif|All Files|*.*";
-                if (ofd.ShowDialog() == DialogResult.OK)
+                ofd.Filter = filter;
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                string inputPath = ofd.FileName;
+                txtInputPath.Text = inputPath;
+                processingPath = inputPath;
+            }
+
+            if (currentType == SteganographyType.Image)
+            {
+                // --- Image path handling (unchanged) ---
+                if (!processingPath.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
                 {
-                    string inputPath = ofd.FileName;
-
-                    // Convert to BMP if needed
-                    processingPath = inputPath;
-                    if (!inputPath.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
+                    string bmpPath = ConvertToBmp(processingPath);
+                    if (bmpPath == null)
                     {
-                        string bmpPath = ConvertToBmp(inputPath);
-                        if (bmpPath != null)
-                        {
-                            processingPath = bmpPath;
-                        }
-                        else
-                        {
-                            LogActivity("Error: Failed to convert image to BMP.");
-                            return;
-                        }
+                        LogActivity("Error: Failed to convert image to BMP.");
+                        return;
                     }
+                    processingPath = bmpPath;
+                }
 
-                    txtInputPath.Text = inputPath; // Show the original path to the user
-                    originalImage = new Bitmap(processingPath); // Load the BMP for internal processing
-                    pictureBoxOriginal.Image = originalImage;
+                originalImage = new Bitmap(processingPath);
+                pictureBoxOriginal.Image = originalImage;
+                UpdateCapacityInfo(processingPath);
+            }
+            else
+            {
+                // --- WAV path handling ---
+                try
+                {
+                    // read header + skip directly to samples
+                    using (var fs = new FileStream(processingPath, FileMode.Open, FileAccess.Read))
+                    using (var br = new BinaryReader(fs))
+                    {
+                        WavHeader hdr = WavHelper.ReadWavHeader(br);
 
-                    // Update capacity info under the path
-                    UpdateCapacityInfo(processingPath);
+                        // compute capacity: one bit per PCM sample
+                        long bytesPerSample = hdr.BitsPerSample / 8;
+                        long totalSamples = hdr.DataSize / bytesPerSample;
+                        maxCapacity = totalSamples / 8;
+
+                        lblCapacityInfo.Text =
+                            $"Can hide: ~{maxCapacity} bytes ({maxCapacity / 1024.0:N1} KB)";
+                        lblCapacityInfo.ForeColor =
+                            maxCapacity > 0 ? SystemColors.ControlText : Color.Red;
+
+                        // render WAV metadata into pictureBoxOriginal
+                        var lines = new[]
+                        {
+            $"File: {Path.GetFileName(processingPath)}",
+            $"Channels: {hdr.NumChannels}",
+            $"Bits/Sample: {hdr.BitsPerSample}",
+            $"Sample Rate: {hdr.SampleRate} Hz",
+            $"Data Size: {hdr.DataSize} bytes"
+        };
+                        // ensure we have a minimally sensible render area
+                        var target = pictureBoxOriginal.ClientSize;
+                        if (target.Width < 10) target.Width = 200;
+                        if (target.Height < 10) target.Height = 120;
+                        pictureBoxOriginal.Image = RenderTextInfo(target, lines);
+
+                        LogActivity(
+                            $"Loaded WAV: {hdr.NumChannels}ch, {hdr.BitsPerSample}-bit @ {hdr.SampleRate}Hz, data={hdr.DataSize}B"
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogActivity("Error reading WAV: " + ex.Message);
+                    lblCapacityInfo.Text = "Capacity info unavailable";
+                    lblCapacityInfo.ForeColor = Color.Red;
                 }
             }
         }
+
+
         private void UpdateCapacityInfo(string imagePath)
         {
             try
@@ -188,8 +260,164 @@ namespace interfata
             }
         }
 
+        private void hideFileInWav()
+        {
+            try
+            {
+                var inputPath = txtInputPath.Text;
+                if (string.IsNullOrWhiteSpace(inputPath)) { LogActivity("Pick a WAV first"); return; }
+
+                // 1) Read header + samples
+                var (hdr, samples) = WavHelper.ReadWavFile(inputPath);
+                originalSamples = samples;
+
+                // 2) Pick payload
+                byte[] payload;
+                string payloadName;
+                using (var ofd = new OpenFileDialog { Title = "Select file to hide" })
+                {
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    payload = File.ReadAllBytes(ofd.FileName);
+                    payloadName = Path.GetFileName(ofd.FileName);
+                }
+
+                // 3) Read entire WAV for DLL call
+                byte[] wavData = File.ReadAllBytes(inputPath);
+                byte[] outputData = new byte[wavData.Length];
+
+                // 4) Call native
+                var hW = GCHandle.Alloc(wavData, GCHandleType.Pinned);
+                var hP = GCHandle.Alloc(payload, GCHandleType.Pinned);
+                var hO = GCHandle.Alloc(outputData, GCHandleType.Pinned);
+                try
+                {
+                    SteganographyWrapper.hideFileInWav(
+                        hW.AddrOfPinnedObject(), (uint)wavData.Length,
+                        payloadName,
+                        hP.AddrOfPinnedObject(), (uint)payload.Length,
+                        hO.AddrOfPinnedObject()
+                    );
+                }
+                finally { hW.Free(); hP.Free(); hO.Free(); }
+
+                // 5) Save it
+                var outPath = Path.Combine(
+                    Path.GetDirectoryName(inputPath),
+                    Path.GetFileNameWithoutExtension(inputPath) + "_hidden.wav"
+                );
+                File.WriteAllBytes(outPath, outputData);
+                LogActivity($"WAV hidden → {outPath}");
+
+                // 6) Render metadata + filename
+                var lines = new[]
+                {
+            $"Song: {Path.GetFileName(inputPath)}",
+            $"Channels: {hdr.NumChannels}",
+            $"Bits/Sample: {hdr.BitsPerSample}",
+            $"SampleRate: {hdr.SampleRate} Hz",
+            $"DataSize: {hdr.DataSize} bytes",
+            $"Payload: {payloadName} ({payload.Length:N0} B)"
+        };
+                var target = pictureBoxModified.ClientSize;
+                if (target.Width < 10 || target.Height < 10)
+                    target = new Size(200, 120);
+                pictureBoxModified.Image = RenderTextInfo(target, lines);
+
+                // stash samples for any future diff
+                modifiedSamples = WavHelper.ReadWavFile(outPath).samples;
+            }
+            catch (Exception ex)
+            {
+                LogActivity($"Error in hideFileInWav: {ex.Message}");
+            }
+        }
+        private void hide_message_wav()
+        {
+            try
+            {
+                // 1) sanity checks
+                var inputPath = txtInputPath.Text;
+                var message = txtMessage.Text;
+                if (string.IsNullOrWhiteSpace(inputPath))
+                {
+                    LogActivity("Please select a WAV first!");
+                    return;
+                }
+                if (string.IsNullOrEmpty(message))
+                {
+                    LogActivity("Please enter a message to hide!");
+                    return;
+                }
+
+                // 2) load WAV + samples to compute capacity
+                var (hdr, samples) = WavHelper.ReadWavFile(inputPath);
+                originalSamples = samples;
+                long capacity = samples.Length / 8;
+                if (message.Length + 1 > capacity)
+                {
+                    MessageBox.Show(
+                        $"Message too long: can hide {capacity:N0} bytes, tried {message.Length + 1:N0}.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error
+                    );
+                    return;
+                }
+
+                // 3) read raw bytes for P/Invoke
+                byte[] wavData = File.ReadAllBytes(inputPath);
+                byte[] outputData = new byte[wavData.Length];
+
+                // 4) pin & call native hideMessageInWav
+                var hIn = GCHandle.Alloc(wavData, GCHandleType.Pinned);
+                var hOut = GCHandle.Alloc(outputData, GCHandleType.Pinned);
+                try
+                {
+                    SteganographyWrapper.hideMessageInWav(
+                        hIn.AddrOfPinnedObject(),
+                        (uint)wavData.Length,
+                        message,
+                        hOut.AddrOfPinnedObject()
+                    );
+                }
+                finally
+                {
+                    hIn.Free();
+                    hOut.Free();
+                }
+
+                // 5) write out the stego‐WAV
+                string outPath = Path.Combine(
+                    Path.GetDirectoryName(inputPath),
+                    Path.GetFileNameWithoutExtension(inputPath) + "_msg_hidden.wav"
+                );
+                File.WriteAllBytes(outPath, outputData);
+                LogActivity($"WAV with hidden message written to: {outPath}");
+
+                // 6) stash & render metadata
+                modifiedSamples = WavHelper.ReadWavFile(outPath).samples;
+                var lines = new[]
+                {
+            $"File: {Path.GetFileName(outPath)}",
+            $"Channels:    {hdr.NumChannels}",
+            $"Bits/Sample: {hdr.BitsPerSample}",
+            $"SampleRate:  {hdr.SampleRate} Hz",
+            $"DataSize:    {hdr.DataSize:N0} bytes",
+            $"Message:     \"{message}\""
+        };
+                pictureBoxModified.Image = RenderTextInfo(pictureBoxModified.ClientSize, lines);
+            }
+            catch (Exception ex)
+            {
+                LogActivity($"Error in hide_message_wav: {ex.Message}");
+            }
+        }
+
         private void hide_text_message()
         {
+            if (currentType == SteganographyType.Audio)
+            {
+                hide_message_wav();
+                return;
+            }
             try
             {
                 string inputPath = txtInputPath.Text;
@@ -313,6 +541,11 @@ namespace interfata
 
         private void hide_file()
         {
+            if(currentType == SteganographyType.Audio)
+            {
+                hideFileInWav();
+                return;
+            }
             try
             {
                 string inputPath = txtInputPath.Text;
@@ -466,8 +699,110 @@ namespace interfata
             }
             return shuffleKey;
         }
+
+        private void extractFileFromWav()
+        {
+            try
+            {
+                string inputPath = txtInputPath.Text;
+                if (string.IsNullOrWhiteSpace(inputPath))
+                {
+                    LogActivity("Please select a stego WAV!");
+                    return;
+                }
+
+                // 1) Load the entire stego‐WAV
+                byte[] wavData = File.ReadAllBytes(inputPath);
+
+                // 2) Prepare extraction buffers
+                var nameBuf = new StringBuilder(260);
+                byte[] payloadBuf = new byte[wavData.Length];
+                uint extractedSize;
+
+                // 3) Pin and call into native DLL
+                var hWav = GCHandle.Alloc(wavData, GCHandleType.Pinned);
+                var hPay = GCHandle.Alloc(payloadBuf, GCHandleType.Pinned);
+                try
+                {
+                    SteganographyWrapper.extractFileFromWav(
+                        hWav.AddrOfPinnedObject(),
+                        (uint)wavData.Length,
+                        nameBuf,
+                        (uint)nameBuf.Capacity,
+                        hPay.AddrOfPinnedObject(),
+                        (uint)payloadBuf.Length,
+                        out extractedSize
+                    );
+                }
+                finally
+                {
+                    hWav.Free();
+                    hPay.Free();
+                }
+
+                // 4) Write the extracted payload with its original name
+                string outFile = Path.Combine(
+                    Path.GetDirectoryName(inputPath),
+                    nameBuf.ToString()
+                );
+                File.WriteAllBytes(outFile, payloadBuf.Take((int)extractedSize).ToArray());
+                LogActivity($"File extracted from WAV to: {outFile}");
+            }
+            catch (Exception ex)
+            {
+                LogActivity($"Error in extractFileFromWav: {ex.Message}");
+            }
+        }
+        private void extract_message_wav()
+        {
+            try
+            {
+                // 1) sanity check
+                var inputPath = txtInputPath.Text;
+                if (string.IsNullOrWhiteSpace(inputPath))
+                {
+                    LogActivity("Please select a stego‐WAV first!");
+                    return;
+                }
+
+                // 2) read raw bytes
+                byte[] wavData = File.ReadAllBytes(inputPath);
+                // use previously computed maxCapacity (samples.Length/8)
+                var sb = new StringBuilder((int)maxCapacity);
+
+                // 3) pin & call native revealMessageFromWav
+                var hIn = GCHandle.Alloc(wavData, GCHandleType.Pinned);
+                try
+                {
+                    SteganographyWrapper.revealMessageFromWav(
+                        hIn.AddrOfPinnedObject(),
+                        (uint)wavData.Length,
+                        sb,
+                        (uint)sb.Capacity
+                    );
+                }
+                finally
+                {
+                    hIn.Free();
+                }
+
+                // 4) display
+                txtOutput.Text = sb.ToString().TrimEnd('\0');
+                LogActivity("Message extracted successfully from WAV.");
+            }
+            catch (Exception ex)
+            {
+                LogActivity($"Error in extract_message_wav: {ex.Message}");
+            }
+        }
+
         private void extract_message()
         {
+            if(currentType == SteganographyType.Audio)
+            {
+                extract_message_wav();
+                return;
+            }
             try
             {
                 string inputPath = txtInputPath.Text;
@@ -579,8 +914,13 @@ namespace interfata
 
         private void extract_file()
         {
-            try
+            if (currentType == SteganographyType.Audio)
             {
+                extractFileFromWav();
+                return;
+            }
+                try
+                {
                 // 1) Read directly from whatever path the user has in the textbox
                 string inputPath = txtInputPath.Text;
                 string password = get_shuffle_key();
@@ -730,78 +1070,108 @@ namespace interfata
 
         private async void btnCompareImages_Click(object sender, EventArgs e)
         {
-            if (originalImage == null || modifiedImage == null)
-            {
-                MessageBox.Show("Please load and process both images first.");
-                return;
-            }
-
             btnCompareImages.Text = "Comparing...";
             btnCompareImages.Enabled = false;
             progressBarCompare.Visible = true;
+
+            if (currentType == SteganographyType.Audio)
+            {
+                if (originalSamples == null || modifiedSamples == null)
+                {
+                    MessageBox.Show("Please load and process both audio files first.");
+                }
+                else
+                {
+                    int N = Math.Min(originalSamples.Length, modifiedSamples.Length);
+                    int diffs = 0;
+                    for (int i = 0; i < N; i++)
+                        if ((originalSamples[i] & 1) != (modifiedSamples[i] & 1))
+                            diffs++;
+
+                    double pct = 100.0 * diffs / N;
+                    MessageBox.Show(
+                        $"{diffs:N0} samples out of {N:N0} changed their LSBs\n({pct:F2}% difference)",
+                        "Audio LSB Difference",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+
+                // restore UI state
+                btnCompareImages.Text = "Compare";
+                btnCompareImages.Enabled = true;
+                progressBarCompare.Visible = false;
+                return;
+            }
+
+            // --- IMAGE CASE (your existing code) ---
+            if (originalImage == null || modifiedImage == null)
+            {
+                MessageBox.Show("Please load and process both images first.");
+                goto CLEANUP;
+            }
+
             progressBarCompare.Minimum = 0;
             progressBarCompare.Maximum = originalImage.Height;
             progressBarCompare.Value = 0;
 
-            Bitmap diffImage = new Bitmap(originalImage.Width, originalImage.Height);
+            var diffImage = new Bitmap(originalImage.Width, originalImage.Height);
 
             await Task.Run(() =>
             {
-                int singleChannelModifications = 0;
-                int multiChannelModifications = 0;
-
                 for (int y = 0; y < originalImage.Height; y++)
                 {
                     for (int x = 0; x < originalImage.Width; x++)
                     {
-                        Color pixelOriginal = originalImage.GetPixel(x, y);
-                        Color pixelModified = modifiedImage.GetPixel(x, y);
+                        var pO = originalImage.GetPixel(x, y);
+                        var pM = modifiedImage.GetPixel(x, y);
 
-                        // Count modified channels (R, G, or B)
-                        if (pixelOriginal.R != pixelModified.R) singleChannelModifications++;
-                        if (pixelOriginal.G != pixelModified.G) singleChannelModifications++;
-                        if (pixelOriginal.B != pixelModified.B) singleChannelModifications++;
-
-                        // If ANY channel differs, mark the pixel as changed
-                        if (pixelOriginal != pixelModified)
-                        {
+                        if (pO != pM)
                             diffImage.SetPixel(x, y, Color.Red);
-                            multiChannelModifications++; // Counts unique pixels modified
-                        }
                         else
-                        {
-                            diffImage.SetPixel(x, y, pixelOriginal);
-                        }
+                            diffImage.SetPixel(x, y, pO);
                     }
-                    Invoke(new Action(() => progressBarCompare.Value = y + 1));
+                    Invoke((Action)(() => progressBarCompare.Value = y + 1));
                 }
             });
 
             progressBarCompare.Visible = false;
-            btnCompareImages.Text = "Compare Images";
+
+            // show diff
+            {
+                var preview = new Form
+                {
+                    Text = "Differences Highlighted",
+                    StartPosition = FormStartPosition.CenterScreen,
+                    ClientSize = new Size(1000, 700)
+                };
+                var pb = new PictureBox
+                {
+                    Dock = DockStyle.Fill,
+                    Image = diffImage,
+                    SizeMode = PictureBoxSizeMode.Zoom
+                };
+                preview.Controls.Add(pb);
+                preview.Show();
+            }
+
+        DONE:
+            btnCompareImages.Text = "Compare";
             btnCompareImages.Enabled = true;
+            return;
 
-            // Show the result as before
-            Form previewForm = new Form();
-            previewForm.Text = "Differences Highlighted";
-            previewForm.StartPosition = FormStartPosition.CenterScreen;
-            previewForm.ClientSize = new Size(1000, 700);
-
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.Dock = DockStyle.Fill;
-            pictureBox.Image = diffImage;
-            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-
-            previewForm.Controls.Add(pictureBox);
-            previewForm.Show();
+        CLEANUP:
+            progressBarCompare.Visible = false;
+            btnCompareImages.Text = "Compare";
+            btnCompareImages.Enabled = true;
         }
 
-      
         private void rdbMessage_CheckedChanged(object sender, EventArgs e)
         {
             if (rdbMessage.Checked)
             {
                 SetOperationMode(OperationMode.Message);
+                label5.Text = "Hidden message";
             }
         }
 
@@ -810,27 +1180,12 @@ namespace interfata
             if (rdbFile.Checked)
             {
                 SetOperationMode(OperationMode.File);
+                cmbOutputFormat.Visible = false; 
+                labeSaveOutput.Visible = false;
+                label5.Text = "Extracted file path";
             }
         }
 
-        private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Update the currentMethod based on the selected index
-            if (cmbMethod.SelectedIndex == 0)
-            {
-                currentMethod = SteganographyMethod.StandardLSB; // Standard LSB (Blue Channel)
-                LogActivity("Switched to Standard LSB (Blue Channel) method.");
-            }
-            else if (cmbMethod.SelectedIndex == 1)
-            {
-                currentMethod = SteganographyMethod.MultiChannelLSB; // Multi-Channel LSB (R+G+B)
-                LogActivity("Switched to Multi-Channel LSB (R+G+B) method.");
-            }
-            if(!string.IsNullOrEmpty(processingPath))
-            { 
-                UpdateCapacityInfo(processingPath);
-            }
-        }
         private void btnReset_Click(object sender, EventArgs e)
         {
             // Clear text fields
@@ -854,8 +1209,6 @@ namespace interfata
             modifiedImage = null;
             textboxShuffle.Text = Constants.DEFAULT_SHUFFLE_TEXT;
             textboxShuffle.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
-            textboxEncryptionKey.Text= Constants.DEFAULT_ENCRYPTION_TEXT;
-            textboxEncryptionKey.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
             // Reset capacity info
             lblCapacityInfo.Text = string.Empty;
 
@@ -881,29 +1234,101 @@ namespace interfata
             }
         }
 
-        private void textboxEncryptionKey_Enter(object sender, EventArgs e)
-        {
-            if (textboxEncryptionKey.Text == Constants.DEFAULT_ENCRYPTION_TEXT)
-            {
-                textboxEncryptionKey.Text = string.Empty;
-                textboxEncryptionKey.ForeColor = Color.Black; // Reset text color to default
-            }
-        }
 
-        private void textboxEncryptionKey_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(textboxEncryptionKey.Text))
-            {
-                textboxEncryptionKey.Text = Constants.DEFAULT_ENCRYPTION_TEXT;
-                textboxEncryptionKey.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
-            }
-        }
         private (string ext, ImageFormat fmt) GetOutputSettings()
         {
             if (cmbOutputFormat.SelectedItem.ToString() == "PNG")
                 return (".png", ImageFormat.Png);
             else
                 return (".bmp", ImageFormat.Bmp);
+        }
+
+        private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update the currentMethod based on the selected index
+            if (cmbMethod.SelectedIndex == 0)
+            {
+                currentMethod = SteganographyMethod.StandardLSB; // Standard LSB (Blue Channel)
+                LogActivity("Switched to Standard LSB (Blue Channel) method.");
+            }
+            else if (cmbMethod.SelectedIndex == 1)
+            {
+                currentMethod = SteganographyMethod.MultiChannelLSB; // Multi-Channel LSB (R+G+B)
+                LogActivity("Switched to Multi-Channel LSB (R+G+B) method.");
+            }
+            if (!string.IsNullOrEmpty(processingPath))
+            {
+                UpdateCapacityInfo(processingPath);
+            }
+        }
+        private void cmbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 1) Update your enum & log
+            currentType = (SteganographyType)cmbType.SelectedIndex;
+            LogActivity(currentType == SteganographyType.Audio ? "Switched to audio."
+                                                                : "Switched to image.");
+
+            // 2) Rebuild the Technique list
+            cmbMethod.BeginUpdate();
+            cmbMethod.Items.Clear();
+            cmbMethod.Items.Add("Standard LSB (Blue Channel)");
+            if (currentType == SteganographyType.Image)
+            {
+                cmbMethod.Items.Add("Multi-Channel LSB (R+G+B)");
+            }
+            cmbMethod.EndUpdate();
+
+            // 3) Always pick the first entry so we never have an invalid selection
+            cmbMethod.SelectedIndex = 0;
+
+            // 4) Tweak any other UI bits
+            update_operation_type();
+        }
+        private Image RenderTextInfo(Size sz, string[] lines)
+        {
+            // ensure we have a valid drawing area
+            int w = Math.Max(1, sz.Width);
+            int h = Math.Max(1, sz.Height);
+
+            var bmp = new Bitmap(w, h);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.LightGray);
+
+                // set up font and brush
+                using (var font = new Font("Consolas", 10))
+                using (var brush = new SolidBrush(Color.Black))
+                {
+                    // combine all your lines into one string
+                    string text = string.Join(Environment.NewLine, lines);
+
+                    // define a rectangle inset by 4px on all sides
+                    var layout = new RectangleF(4, 4, w - 8, h - 8);
+
+                    // a StringFormat that wraps text at word boundaries
+                    var sf = new StringFormat
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Near,
+                        FormatFlags = 0,                    // no special flags
+                        Trimming = StringTrimming.Word      // trim by word if it absolutely overflows
+                    };
+
+                    g.DrawString(text, font, brush, layout, sf);
+                }
+            }
+
+            return bmp;
+        }
+
+        private void textboxEncryptionKey_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textboxEncryptionKey_Leave(object sender, EventArgs e)
+        {
+
         }
     }
 
@@ -913,4 +1338,118 @@ namespace interfata
         public const string DEFAULT_ENCRYPTION_TEXT = "Encryption key";
     }
 
+
+        public struct WavHeader
+        {
+            // RIFF chunk descriptor
+            public uint FileSize;      // overall file size minus 8 bytes
+            public uint Format;        // "WAVE" as uint32
+
+            // fmt sub-chunk
+            public ushort AudioFormat;   // PCM = 1
+            public ushort NumChannels;   // mono = 1, stereo = 2
+            public uint SampleRate;    // 44100, 48000, etc
+            public uint ByteRate;      // == SampleRate * NumChannels * BitsPerSample/8
+            public ushort BlockAlign;    // == NumChannels * BitsPerSample/8
+            public ushort BitsPerSample; // 8, 16, 24, etc
+
+            // data sub-chunk
+            public uint DataSize;      // number of bytes of PCM data
+        }
+
+    public static class WavHelper
+    {
+        public static WavHeader ReadWavHeader(BinaryReader br)
+        {
+            // 1) RIFF header
+            if (Encoding.ASCII.GetString(br.ReadBytes(4)) != "RIFF")
+                throw new InvalidDataException("Not a RIFF file");
+            br.ReadUInt32(); // skip file size
+            if (Encoding.ASCII.GetString(br.ReadBytes(4)) != "WAVE")
+                throw new InvalidDataException("Not a WAVE file");
+
+            var hdr = new WavHeader();
+
+            // 2) scan chunks until we find "data"
+            while (br.BaseStream.Position < br.BaseStream.Length)
+            {
+                string chunkId = Encoding.ASCII.GetString(br.ReadBytes(4));
+                uint chunkSize = br.ReadUInt32();
+
+                if (chunkId == "fmt ")
+                {
+                    hdr.AudioFormat = br.ReadUInt16();
+                    hdr.NumChannels = br.ReadUInt16();
+                    hdr.SampleRate = br.ReadUInt32();
+                    hdr.ByteRate = br.ReadUInt32();
+                    hdr.BlockAlign = br.ReadUInt16();
+                    hdr.BitsPerSample = br.ReadUInt16();
+                    if (chunkSize > 16)
+                        br.ReadBytes((int)(chunkSize - 16));
+                }
+                else if (chunkId == "data")
+                {
+                    hdr.DataSize = chunkSize;
+                    return hdr;
+                }
+                else
+                {
+                    br.ReadBytes((int)chunkSize);
+                }
+            }
+
+            throw new InvalidDataException("WAV data chunk not found");
+        }
+
+        public static void WriteWavHeader(BinaryWriter bw, WavHeader hdr)
+        {
+            // RIFF
+            bw.Write(Encoding.ASCII.GetBytes("RIFF"));
+            // file-size = 4("WAVE") + (8+16) + (8+dataSize)
+            uint fileSizeMinus8 = 4 + (8 + 16) + (8 + hdr.DataSize);
+            bw.Write(fileSizeMinus8);
+            bw.Write(Encoding.ASCII.GetBytes("WAVE"));
+
+            // fmt chunk
+            bw.Write(Encoding.ASCII.GetBytes("fmt "));
+            bw.Write((uint)16);
+            bw.Write(hdr.AudioFormat);
+            bw.Write(hdr.NumChannels);
+            bw.Write(hdr.SampleRate);
+            bw.Write(hdr.ByteRate);
+            bw.Write(hdr.BlockAlign);
+            bw.Write(hdr.BitsPerSample);
+
+            // data chunk
+            bw.Write(Encoding.ASCII.GetBytes("data"));
+            bw.Write(hdr.DataSize);
+        }
+
+        public static (WavHeader header, byte[] samples) ReadWavFile(string path)
+        {
+            using (FileStream fs = File.OpenRead(path))
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                WavHeader hdr = ReadWavHeader(br);
+                byte[] samples = br.ReadBytes((int)hdr.DataSize);
+                return (hdr, samples);
+            }
+        }
+
+        public static void WriteWavFile(string path, WavHeader hdr, byte[] samples)
+        {
+            using (FileStream fs = File.Create(path))
+            using (BinaryWriter bw = new BinaryWriter(fs))
+            {
+                hdr.DataSize = (uint)samples.Length;
+                hdr.ByteRate = (uint)(hdr.SampleRate * hdr.NumChannels * hdr.BitsPerSample / 8);
+                hdr.BlockAlign = (ushort)(hdr.NumChannels * hdr.BitsPerSample / 8);
+
+                WriteWavHeader(bw, hdr);
+                bw.Write(samples);
+            }
+        }
+    }
 }
+
+

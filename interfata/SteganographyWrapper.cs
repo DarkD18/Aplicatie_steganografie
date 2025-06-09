@@ -164,6 +164,44 @@ namespace interfata
             uint fileDataBufsize,
             ref uint fileSize
         );
+        /******************************** WAV lsb shuffle DLL includes ***************************************/
+        const string Dll = "librarie_steganografie_c.dll";
 
+        [DllImport(Dll, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void hideMessageInWav(
+            IntPtr wavData,
+            uint wavDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] string message,
+            IntPtr outputData
+        );
+
+        [DllImport(Dll, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern void revealMessageFromWav(
+            IntPtr wavData,
+            uint wavDataSize,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder output,
+            uint maxLen
+        );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void hideFileInWav(
+               IntPtr wavData,
+               uint wavDataSize,
+               [MarshalAs(UnmanagedType.LPStr)] string fileName,
+               IntPtr fileData,
+               uint fileSize,
+               IntPtr outputData
+           );
+
+        [DllImport("librarie_steganografie_c.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void extractFileFromWav(
+            IntPtr wavData,
+            uint wavDataSize,
+            [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder fileName,
+            uint fileNameBufsize,
+            IntPtr fileData,
+            uint fileDataBufsize,
+            out uint fileSize
+        );
     }
 }

@@ -867,116 +867,345 @@ __declspec(dllexport) void extract_file_multichannel_shuffle(
 }
 
 #pragma endregion
-// generate de ai
 
-//// Padded LSB: Adds padding bits to the message
-//void hide_message_with_padding(const uint8_t* image_path, const uint8_t* message, const uint8_t* output_path) {
-//	BMPImage* bmp = load_bmp(image_path);
-//	if (!bmp) {
-//		printf("Error: Unable to load image.\n");
-//		return;
-//	}
-//	uint32_t msg_len = strlen(message) + 1; // Include null terminator
-//	uint32_t pixel_count = bmp->header.image_size;
-//	// Calculate padding
-//	uint32_t padding = (8 - (msg_len % 8)) % 8;
-//	uint32_t total_bits = msg_len * 8 + padding;
-//	if (total_bits > pixel_count * 8) {
-//		printf("Error: Message too long for padded LSB.\n");
-//		free_bmp(bmp);
-//		return;
-//	}
-//	// Hide message with padding
-//	for (uint32_t i = 0; i < msg_len; ++i) {
-//		for (int bit = 0; bit < 8; ++bit) {
-//			uint32_t index = i * 8 + bit;
-//			bmp->pixel_data[index] = (bmp->pixel_data[index] & ~1) | ((message[i] >> bit) & 1);
-//		}
-//	}
-//	// Add padding bits
-//	for (uint32_t i = msg_len * 8; i < total_bits; ++i) {
-//		bmp->pixel_data[i] &= ~1; // Set to zero
-//	}
-//	save_bmp(output_path, bmp);
-//	free_bmp(bmp);
-//}   
-//
-//
-//void reveal_message_with_padding(const uint8_t* image_path, uint8_t* output, uint32_t max_len) {
-//	BMPImage* bmp = load_bmp(image_path);
-//	if (!bmp) {
-//		printf("Error: Unable to load image.\n");
-//		return;
-//	}
-//	uint32_t i, bit;
-//	for (i = 0; i < max_len; ++i) {
-//		output[i] = 0;
-//		for (bit = 0; bit < 8; ++bit) {
-//			uint32_t index = i * 8 + bit;
-//			output[i] |= (bmp->pixel_data[index] & 1) << bit;
-//		}
-//		if (output[i] == '\0') break;
-//	}
-//	output[max_len - 1] = '\0';
-//	free_bmp(bmp);
-//}   
+#pragma region wav_lsb
+#define ERR(msg) do { MessageBoxA(NULL, msg, "Error", MB_OK | MB_ICONERROR); return; } while(0)
+
+static uint32_t read_le32(const uint8_t* p) {
+    return (uint32_t)p[0] | ((uint32_t)p[1] << 8)
+        | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
+}
+
+static uint16_t read_le16(const uint8_t* p) {
+    return (uint16_t)p[0] | ((uint16_t)p[1] << 8);
+}
 
 
+__declspec(dllexport)
+void hideMessageInWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* message,
+    uint8_t* output_data
+) {
+    if (!wav_data || !message || !output_data) ERR("Null pointer provided.");
 
-//void hide_message_with_encryption(const uint8_t* image_path, const uint8_t* message, const uint8_t* output_path) {
-//	// Encrypt the message using a simple XOR cipher
-//	uint8_t key = 'K'; // Simple key for XOR encryption
-//	uint8_t encrypted_message[256];
-//	uint32_t msg_len = strlen(message) + 1; // Include null terminator
-//	for (uint32_t i = 0; i < msg_len; ++i) {
-//		encrypted_message[i] = message[i] ^ key;
-//	}
-//	// Hide the encrypted message in the image
-//	//hideMessage(image_path, encrypted_message, output_path);
-//}
-//
-//
-//void reveal_message_with_decryption(const uint8_t* image_path, uint8_t* output, uint32_t max_len) {
-//	// Reveal the encrypted message from the image
-//	//revealMessage(image_path, output, max_len);
-//	// Decrypt the message using the same XOR cipher
-//	uint8_t key = 'K'; // Simple key for XOR encryption
-//	for (uint32_t i = 0; i < strlen(output); ++i) {
-//		output[i] ^= key;
-//	}
-//}
-//
-//void hide_message_with_compression(const uint8_t* image_path, const uint8_t* message, const uint8_t* output_path) {
-//	// Compress the message using a simple RLE (Run-Length Encoding) algorithm
-//	uint8_t compressed_message[256];
-//	uint32_t compressed_len = 0;
-//	uint32_t msg_len = strlen(message);
-//	for (uint32_t i = 0; i < msg_len; ++i) {
-//		uint8_t count = 1;
-//		while (i + 1 < msg_len && message[i] == message[i + 1]) {
-//			count++;
-//			i++;
-//		}
-//		compressed_message[compressed_len++] = count;
-//		compressed_message[compressed_len++] = message[i];
-//	}
-//	compressed_message[compressed_len] = '\0';
-//	// Hide the compressed message in the image
-//	//hideMessage(image_path, compressed_message, output_path);
-//}
-//
-//
-//void reveal_message_with_decompression(const uint8_t* image_path, uint8_t* output, uint32_t max_len) {
-//	// Reveal the compressed message from the image
-//	//revealMessage(image_path, output, max_len);
-//	// Decompress the message using the same RLE algorithm
-//	uint32_t decompressed_len = 0;
-//	for (uint32_t i = 0; i < strlen(output); i += 2) {
-//		uint8_t count = output[i];
-//		uint8_t value = output[i + 1];
-//		for (uint8_t j = 0; j < count; ++j) {
-//			output[decompressed_len++] = value;
-//		}
-//	}
-//	output[decompressed_len] = '\0';
-//}
+    // must have at least RIFF + fmt + data headers
+    if (wav_data_size < 44) ERR("Data too small to be a valid WAV.");
+
+    // verify RIFF/WAVE signature
+    if (memcmp(wav_data, "RIFF", 4) != 0 || memcmp(wav_data + 8, "WAVE", 4) != 0)
+        ERR("Not a valid RIFF/WAVE file.");
+
+    // scan for fmt & data
+    uint32_t offset = 12;
+    uint16_t audio_format = 0, bits_per_sample = 0;
+    uint32_t data_off = 0, data_sz = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t chunk_id = read_le32(wav_data + offset);
+        uint32_t chunk_sz = read_le32(wav_data + offset + 4);
+        uint32_t next_chunk = offset + 8 + chunk_sz + (chunk_sz & 1);
+
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0) {
+            if (chunk_sz < 16) ERR("Malformed fmt chunk.");
+            audio_format = read_le16(wav_data + offset + 8 + 0);
+            bits_per_sample = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8;
+            data_sz = chunk_sz;
+            break;
+        }
+
+        if (next_chunk <= offset || next_chunk > wav_data_size) break;
+        offset = next_chunk;
+    }
+
+    if (!data_off)                ERR("No data chunk found.");
+    if (audio_format != 1)        ERR("Only PCM WAV supported.");
+    if (bits_per_sample != 8 && bits_per_sample != 16)
+        ERR("Only 8- or 16-bit PCM supported.");
+
+    uint32_t bytes_per_sample = bits_per_sample / 8;
+    uint32_t total_samples = data_sz / bytes_per_sample;
+    uint32_t msg_len = (uint32_t)strlen((const char*)message) + 1;
+    if (msg_len * 8 > total_samples) ERR("Message too long for this WAV.");
+
+    // copy entire file to output
+    memcpy(output_data, wav_data, wav_data_size);
+
+    // embed: for each bit, flip LSB of the first byte of each sample
+    uint32_t bit_idx = 0;
+    for (uint32_t i = 0; i < msg_len; ++i) {
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t sample_pos = data_off + bit_idx * bytes_per_sample;
+            uint8_t  bit = (message[i] >> b) & 1;
+            output_data[sample_pos] = (output_data[sample_pos] & ~1) | bit;
+        }
+    }
+
+    MessageBoxA(NULL, "Message hidden successfully in WAV.", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport)
+void revealMessageFromWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    uint8_t* output,
+    uint32_t       max_len
+) {
+    if (!wav_data || !output) ERR("Null pointer provided.");
+    if (wav_data_size < 44) ERR("Data too small to be a valid WAV.");
+
+    if (memcmp(wav_data, "RIFF", 4) != 0 || memcmp(wav_data + 8, "WAVE", 4) != 0)
+        ERR("Not a valid RIFF/WAVE file.");
+
+    uint32_t offset = 12;
+    uint16_t audio_format = 0, bits_per_sample = 0;
+    uint32_t data_off = 0, data_sz = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t nxt = offset + 8 + sz + (sz & 1);
+
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0) {
+            if (sz < 16) ERR("Malformed fmt chunk.");
+            audio_format = read_le16(wav_data + offset + 8 + 0);
+            bits_per_sample = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8;
+            data_sz = sz;
+            break;
+        }
+
+        if (nxt <= offset || nxt > wav_data_size) break;
+        offset = nxt;
+    }
+
+    if (!data_off)           ERR("No data chunk found.");
+    if (audio_format != 1)   ERR("Only PCM WAV supported.");
+    if (bits_per_sample != 8 && bits_per_sample != 16)
+        ERR("Only 8- or 16-bit PCM supported.");
+
+    uint32_t bytes_per_sample = bits_per_sample / 8;
+    uint32_t total_samples = data_sz / bytes_per_sample;
+
+    uint32_t bit_idx = 0;
+    for (uint32_t i = 0; i < max_len; ++i) {
+        output[i] = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            if (bit_idx >= total_samples) {
+                output[i] = '\0';
+                return;
+            }
+            uint32_t pos = data_off + bit_idx * bytes_per_sample;
+            output[i] |= (wav_data[pos] & 1) << b;
+        }
+        if (output[i] == '\0') break;
+    }
+    output[max_len - 1] = '\0';
+    MessageBoxA(NULL, "Message revealed successfully from WAV.", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport)
+void hideFileInWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    const uint8_t* file_name,
+    const uint8_t* file_data,
+    uint32_t       file_size,
+    uint8_t* output_data
+) {
+    if (!wav_data || !file_name || !file_data || !output_data) ERR("Null pointer provided.");
+
+    // Must be at least RIFF header + fmt + data headers
+    if (wav_data_size < 44) ERR("Data too small to be valid WAV.");
+
+    // 1) Validate RIFF/WAVE
+    if (memcmp(wav_data, "RIFF", 4) != 0 ||
+        memcmp(wav_data + 8, "WAVE", 4) != 0)
+        ERR("Not a valid RIFF/WAVE file.");
+
+    // 2) Walk chunks to find fmt & data
+    uint32_t offset = 12;
+    uint16_t audio_format = 0, bits_per_sample = 0;
+    uint32_t data_off = 0, data_sz = 0;
+
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t next = offset + 8 + sz + (sz & 1);
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0) {
+            if (sz < 16) ERR("Malformed fmt chunk.");
+            audio_format = read_le16(wav_data + offset + 8 + 0);
+            bits_per_sample = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8;
+            data_sz = sz;
+            break;
+        }
+        if (next <= offset || next > wav_data_size) break;
+        offset = next;
+    }
+
+    if (!data_off)           ERR("No data chunk found.");
+    if (audio_format != 1)   ERR("Only PCM WAV supported.");
+    if (bits_per_sample != 8 && bits_per_sample != 16)
+        ERR("Only 8- or 16-bit PCM supported.");
+
+    uint32_t bps = bits_per_sample / 8;
+    uint32_t total_samples = data_sz / bps;
+    uint32_t capacity_bytes = total_samples / 8;         // one LSB per sample
+    uint32_t name_len = (uint32_t)strlen((const char*)file_name);
+    uint64_t needed = 4 + 1                   // STGF + method
+        + 4                      // name length
+        + name_len
+        + 4                      // data size
+        + file_size;
+    if (needed > capacity_bytes) ERR("Payload + filename too large for WAV.");
+
+    // 3) Copy entire WAV into output
+    memcpy(output_data, wav_data, wav_data_size);
+
+    // 4) LSB-embed in data chunk
+    uint32_t bit_idx = 0;
+    // a) “STGF”
+    const char magic[4] = { 'S','T','G','F' };
+    for (int i = 0; i < 4; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pos = data_off + bit_idx * bps;
+            uint8_t  bit = (magic[i] >> b) & 1;
+            output_data[pos] = (output_data[pos] & ~1) | bit;
+        }
+    // b) method = 0x01
+    for (int b = 0; b < 8; ++b, ++bit_idx) {
+        uint32_t pos = data_off + bit_idx * bps;
+        output_data[pos] = (output_data[pos] & ~1) | ((0x01 >> b) & 1);
+    }
+    // c) name length (32-bit LE)
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t pos = data_off + bit_idx * bps;
+        output_data[pos] = (output_data[pos] & ~1) | ((name_len >> b) & 1);
+    }
+    // d) filename bytes
+    for (uint32_t i = 0; i < name_len; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pos = data_off + bit_idx * bps;
+            output_data[pos] = (output_data[pos] & ~1) | ((file_name[i] >> b) & 1);
+        }
+    // e) payload size (32-bit LE)
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t pos = data_off + bit_idx * bps;
+        output_data[pos] = (output_data[pos] & ~1) | ((file_size >> b) & 1);
+    }
+    // f) payload bytes
+    for (uint32_t i = 0; i < file_size; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pos = data_off + bit_idx * bps;
+            output_data[pos] = (output_data[pos] & ~1) | ((file_data[i] >> b) & 1);
+        }
+
+    MessageBoxA(NULL, "File hidden successfully in WAV.", "SUCCESS", MB_OK);
+}
+
+__declspec(dllexport)
+void extractFileFromWav(
+    const uint8_t* wav_data,
+    uint32_t       wav_data_size,
+    uint8_t* file_name,
+    uint32_t       file_name_bufsize,
+    uint8_t* file_data,
+    uint32_t       file_data_bufsize,
+    uint32_t* file_size
+) {
+    if (!wav_data || !file_name || !file_data || !file_size) ERR("Null pointer provided.");
+    if (wav_data_size < 44) ERR("Data too small to be valid WAV.");
+    if (memcmp(wav_data, "RIFF", 4) != 0 || memcmp(wav_data + 8, "WAVE", 4) != 0)
+        ERR("Not a valid WAV.");
+
+    // locate data chunk
+    uint32_t offset = 12, data_off = 0, data_sz = 0; uint16_t fmt = 0, bps16 = 0;
+    while (offset + 8 <= wav_data_size) {
+        uint32_t id = read_le32(wav_data + offset);
+        uint32_t sz = read_le32(wav_data + offset + 4);
+        uint32_t nxt = offset + 8 + sz + (sz & 1);
+        if (memcmp(wav_data + offset, "fmt ", 4) == 0 && sz >= 16) {
+            fmt = read_le16(wav_data + offset + 8);
+            bps16 = read_le16(wav_data + offset + 8 + 14);
+        }
+        else if (memcmp(wav_data + offset, "data", 4) == 0) {
+            data_off = offset + 8; data_sz = sz; break;
+        }
+        if (nxt <= offset || nxt > wav_data_size) break;
+        offset = nxt;
+    }
+    if (!data_off) ERR("No data chunk found.");
+    if (fmt != 1) ERR("Only PCM WAV supported.");
+    if (bps16 != 8 && bps16 != 16) ERR("Only 8/16-bit supported.");
+
+    uint32_t bps = bps16 / 8;
+    uint32_t samples = data_sz / bps;
+    uint32_t cap_bytes = samples / 8;
+
+    // 1) read magic
+    uint32_t bit_idx = 0; char magic[4] = { 0 };
+    for (int i = 0; i < 4; ++i)
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pos = data_off + bit_idx * bps;
+            magic[i] |= (wav_data[pos] & 1) << b;
+        }
+    // 2) method
+    uint8_t method = 0;
+    for (int b = 0; b < 8; ++b, ++bit_idx) {
+        uint32_t pos = data_off + bit_idx * bps;
+        method |= (wav_data[pos] & 1) << b;
+    }
+    if (memcmp(magic, "STGF", 4) != 0 || method != 0x01)
+        ERR("No STGF payload or wrong method.");
+
+    // 3) name length
+    uint32_t name_len = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t pos = data_off + bit_idx * bps;
+        name_len |= (wav_data[pos] & 1) << b;
+    }
+    if (name_len + 4 > cap_bytes) ERR("Malformed name length.");
+    if (name_len >= file_name_bufsize) name_len = file_name_bufsize - 1;
+
+    // 4) filename
+    for (uint32_t i = 0; i < name_len; ++i) {
+        uint8_t ch = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pos = data_off + bit_idx * bps;
+            ch |= (wav_data[pos] & 1) << b;
+        }
+        file_name[i] = ch;
+    }
+    file_name[name_len] = '\0';
+
+    // 5) payload size
+    uint32_t payload_size = 0;
+    for (int b = 0; b < 32; ++b, ++bit_idx) {
+        uint32_t pos = data_off + bit_idx * bps;
+        payload_size |= (wav_data[pos] & 1) << b;
+    }
+    if (payload_size + 4 > cap_bytes) ERR("Payload size exceeds capacity.");
+    if (payload_size > file_data_bufsize) ERR("Output buffer too small.");
+
+    // 6) payload bytes
+    for (uint32_t i = 0; i < payload_size; ++i) {
+        uint8_t ch = 0;
+        for (int b = 0; b < 8; ++b, ++bit_idx) {
+            uint32_t pos = data_off + bit_idx * bps;
+            ch |= (wav_data[pos] & 1) << b;
+        }
+        file_data[i] = ch;
+    }
+
+    *file_size = payload_size;
+    MessageBoxA(NULL, "File extracted from WAV successfully.", "SUCCESS", MB_OK);
+}
+
+#pragma endregion

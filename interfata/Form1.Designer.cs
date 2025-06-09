@@ -54,12 +54,12 @@ namespace interfata
             this.lblCapacityInfo = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
             this.txtOutput_path = new System.Windows.Forms.TextBox();
-            this.label_extracted_output = new System.Windows.Forms.Label();
             this.progressBarCompare = new System.Windows.Forms.ProgressBar();
             this.textboxShuffle = new System.Windows.Forms.TextBox();
-            this.textboxEncryptionKey = new System.Windows.Forms.TextBox();
             this.labeSaveOutput = new System.Windows.Forms.Label();
             this.cmbOutputFormat = new System.Windows.Forms.ComboBox();
+            this.cmbType = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModified)).BeginInit();
             this.grpOperationMode.SuspendLayout();
@@ -68,11 +68,11 @@ namespace interfata
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(171, 105);
+            this.label1.Location = new System.Drawing.Point(238, 105);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 16);
+            this.label1.Size = new System.Drawing.Size(64, 16);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Input image";
+            this.label1.Text = "Input path";
             // 
             // txtInputPath
             // 
@@ -94,7 +94,7 @@ namespace interfata
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(44, 245);
+            this.label3.Location = new System.Drawing.Point(29, 248);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(64, 16);
             this.label3.TabIndex = 6;
@@ -137,7 +137,7 @@ namespace interfata
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 283);
+            this.label5.Location = new System.Drawing.Point(14, 286);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(111, 16);
             this.label5.TabIndex = 12;
@@ -155,7 +155,7 @@ namespace interfata
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(744, 22);
+            this.label6.Location = new System.Drawing.Point(744, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(71, 16);
             this.label6.TabIndex = 15;
@@ -207,7 +207,7 @@ namespace interfata
             this.cmbMethod.Items.AddRange(new object[] {
             "Standard LSB (Blue Channel)",
             "Multi-Channel LSB (R+G+B)"});
-            this.cmbMethod.Location = new System.Drawing.Point(200, 57);
+            this.cmbMethod.Location = new System.Drawing.Point(366, 57);
             this.cmbMethod.Name = "cmbMethod";
             this.cmbMethod.Size = new System.Drawing.Size(250, 24);
             this.cmbMethod.TabIndex = 23;
@@ -251,7 +251,7 @@ namespace interfata
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(270, 33);
+            this.label4.Location = new System.Drawing.Point(180, 50);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(108, 16);
             this.label4.TabIndex = 25;
@@ -260,7 +260,7 @@ namespace interfata
             // lblCapacityInfo
             // 
             this.lblCapacityInfo.AutoSize = true;
-            this.lblCapacityInfo.Location = new System.Drawing.Point(70, 170);
+            this.lblCapacityInfo.Location = new System.Drawing.Point(56, 136);
             this.lblCapacityInfo.Name = "lblCapacityInfo";
             this.lblCapacityInfo.Size = new System.Drawing.Size(0, 16);
             this.lblCapacityInfo.TabIndex = 25;
@@ -277,19 +277,10 @@ namespace interfata
             // 
             // txtOutput_path
             // 
-            this.txtOutput_path.Location = new System.Drawing.Point(30, 280);
+            this.txtOutput_path.Location = new System.Drawing.Point(135, 280);
             this.txtOutput_path.Name = "txtOutput_path";
-            this.txtOutput_path.Size = new System.Drawing.Size(550, 22);
+            this.txtOutput_path.Size = new System.Drawing.Size(445, 22);
             this.txtOutput_path.TabIndex = 27;
-            // 
-            // label_extracted_output
-            // 
-            this.label_extracted_output.AutoSize = true;
-            this.label_extracted_output.Location = new System.Drawing.Point(250, 260);
-            this.label_extracted_output.Name = "label_extracted_output";
-            this.label_extracted_output.Size = new System.Drawing.Size(112, 16);
-            this.label_extracted_output.TabIndex = 6;
-            this.label_extracted_output.Text = "Extracted file path";
             // 
             // progressBarCompare
             // 
@@ -311,37 +302,46 @@ namespace interfata
             this.textboxShuffle.Enter += new System.EventHandler(this.textboxShuffle_Enter);
             this.textboxShuffle.Leave += new System.EventHandler(this.textboxShuffle_Leave);
             // 
-            // textboxEncryptionKey
-            // 
-            this.textboxEncryptionKey.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.textboxEncryptionKey.Location = new System.Drawing.Point(791, 276);
-            this.textboxEncryptionKey.Name = "textboxEncryptionKey";
-            this.textboxEncryptionKey.Size = new System.Drawing.Size(176, 22);
-            this.textboxEncryptionKey.TabIndex = 32;
-            this.textboxEncryptionKey.Text = "Encryption Key";
-            this.textboxEncryptionKey.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textboxEncryptionKey.Enter += new System.EventHandler(this.textboxEncryptionKey_Enter);
-            this.textboxEncryptionKey.Leave += new System.EventHandler(this.textboxEncryptionKey_Leave);
-            // 
             // labeSaveOutput
             // 
             this.labeSaveOutput.AutoSize = true;
-            this.labeSaveOutput.Location = new System.Drawing.Point(44, 210);
+            this.labeSaveOutput.Location = new System.Drawing.Point(29, 210);
             this.labeSaveOutput.Name = "labeSaveOutput";
-            this.labeSaveOutput.Size = new System.Drawing.Size(99, 16);
+            this.labeSaveOutput.Size = new System.Drawing.Size(96, 16);
             this.labeSaveOutput.TabIndex = 33;
-            this.labeSaveOutput.Text = "Save output as:";
+            this.labeSaveOutput.Text = "Save output as";
             // 
             // cmbOutputFormat
             // 
             this.cmbOutputFormat.FormattingEnabled = true;
+            this.cmbOutputFormat.Items.AddRange(new object[] {
+            "BMP",
+            "PNG"});
             this.cmbOutputFormat.Location = new System.Drawing.Point(149, 207);
             this.cmbOutputFormat.Name = "cmbOutputFormat";
             this.cmbOutputFormat.Size = new System.Drawing.Size(121, 24);
             this.cmbOutputFormat.TabIndex = 34;
-            this.cmbOutputFormat.Items.AddRange(new object[] {
-            "BMP",
-            "PNG"});
+            // 
+            // cmbType
+            // 
+            this.cmbType.FormattingEnabled = true;
+            this.cmbType.Items.AddRange(new object[] {
+            "Image",
+            "Audio"});
+            this.cmbType.Location = new System.Drawing.Point(366, 22);
+            this.cmbType.Name = "cmbType";
+            this.cmbType.Size = new System.Drawing.Size(250, 24);
+            this.cmbType.TabIndex = 35;
+            this.cmbType.SelectedIndexChanged += new System.EventHandler(this.cmbType_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(200, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(83, 16);
+            this.label2.TabIndex = 36;
+            this.label2.Text = "Choose type";
             // 
             // Form1
             // 
@@ -349,9 +349,10 @@ namespace interfata
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(992, 676);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.cmbType);
             this.Controls.Add(this.cmbOutputFormat);
             this.Controls.Add(this.labeSaveOutput);
-            this.Controls.Add(this.textboxEncryptionKey);
             this.Controls.Add(this.textboxShuffle);
             this.Controls.Add(this.progressBarCompare);
             this.Controls.Add(this.label4);
@@ -375,7 +376,6 @@ namespace interfata
             this.Controls.Add(this.lblCapacityInfo);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.txtOutput_path);
-            this.Controls.Add(this.label_extracted_output);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -413,13 +413,13 @@ namespace interfata
         private System.Windows.Forms.Label lblCapacityInfo;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.TextBox txtOutput_path;
-        private System.Windows.Forms.Label label_extracted_output;
         private Label label4;
         private ProgressBar progressBarCompare;
         private TextBox textboxShuffle;
-        private TextBox textboxEncryptionKey;
         private Label labeSaveOutput;
         private ComboBox cmbOutputFormat;
+        private ComboBox cmbType;
+        private Label label2;
     }
 }
 
