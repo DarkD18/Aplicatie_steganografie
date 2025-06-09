@@ -4,7 +4,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace interfata
 {
-    partial class Form1
+    partial class AplicatieSteganografie
     {
         /// <summary>
         /// Required designer variable.
@@ -264,9 +264,8 @@ namespace interfata
             this.lblCapacityInfo.AutoSize = true;
             this.lblCapacityInfo.Location = new System.Drawing.Point(196, 67);
             this.lblCapacityInfo.Name = "lblCapacityInfo";
-            this.lblCapacityInfo.Size = new System.Drawing.Size(356, 16);
+            this.lblCapacityInfo.Size = new System.Drawing.Size(0, 16);
             this.lblCapacityInfo.TabIndex = 25;
-            this.lblCapacityInfo.Text = "Capacity info will be displayed here after loading an image.";
             // 
             // btnReset
             // 
@@ -347,16 +346,17 @@ namespace interfata
             this.groupPaths.Controls.Add(this.cmbOutputFormat);
             this.groupPaths.Location = new System.Drawing.Point(12, 86);
             this.groupPaths.Name = "groupPaths";
-            this.groupPaths.Size = new System.Drawing.Size(786, 92);
+            this.groupPaths.Size = new System.Drawing.Size(786, 96);
             this.groupPaths.TabIndex = 0;
             this.groupPaths.TabStop = false;
             this.groupPaths.Text = "File / WAV Path";
             // 
-            // Form1
+            // AplicatieSteganografie
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.BackColor = this.BackColor = ColorTranslator.FromHtml("#b3d0f2"); ;
             this.ClientSize = new System.Drawing.Size(983, 819);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cmbType);
@@ -381,9 +381,9 @@ namespace interfata
             this.Controls.Add(this.cmbMethod);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.groupPaths);
-            this.Name = "Form1";
+            this.Name = "AplicatieSteganografie";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Aplicatie Steganografie";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModified)).EndInit();

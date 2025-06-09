@@ -55,7 +55,7 @@ namespace interfata
         public uint colors_important;     // Number of important colors
     }
 
-    public partial class Form1 : Form
+    public partial class AplicatieSteganografie : Form
     {   
 
         private System.Windows.Forms.PictureBox pictureBoxOriginal;
@@ -75,7 +75,7 @@ namespace interfata
         /*Global variables.*/
         long maxCapacity;
         string processingPath;
-        public Form1()
+        public AplicatieSteganografie()
         {
             InitializeComponent();
             cmbType.SelectedIndex = 0; 
@@ -139,17 +139,14 @@ namespace interfata
             if (currentType == SteganographyType.Image)
             {
                 // --- Image path handling (unchanged) ---
-                if (!processingPath.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
+                // Always convert to 24-bpp BMP
+                string bmpPath = ConvertTo24bppBmp(processingPath);
+                if (bmpPath == null)
                 {
-                    string bmpPath = ConvertToBmp(processingPath);
-                    if (bmpPath == null)
-                    {
-                        LogActivity("Error: Failed to convert image to BMP.");
-                        return;
-                    }
-                    processingPath = bmpPath;
+                    LogActivity("Error: Failed to convert image to 24-bpp BMP.");
+                    return;
                 }
-
+                processingPath = bmpPath;
                 originalImage = new Bitmap(processingPath);
                 pictureBoxOriginal.Image = originalImage;
                 UpdateCapacityInfo(processingPath);
@@ -218,6 +215,10 @@ namespace interfata
                     ? pixels / 8 // 1 bit per pixel for Standard LSB
                     : (pixels / 8) * 3; // 3 channels = 3x capacity for Multi-Channel LSB
                 maxCapacity -= 1;
+                if(currentMode == OperationMode.File)
+                {
+                    maxCapacity -= 50;
+                }
                 lblCapacityInfo.Text = $"Can hide: ~{maxCapacity} bytes ({maxCapacity/1024} KB)";
                 lblCapacityInfo.ForeColor = maxCapacity > 0 ? SystemColors.ControlText : Color.Red;
             }
@@ -225,25 +226,6 @@ namespace interfata
             {
                 lblCapacityInfo.Text = "Capacity info unavailable";
                 lblCapacityInfo.ForeColor = Color.Red;
-            }
-        }
-       
-        private string ConvertToBmp(string imagePath)
-        {
-            try
-            {
-                string bmpPath = Path.ChangeExtension(Path.GetTempFileName(), ".bmp");
-                using (var image = Image.FromFile(imagePath))
-                {
-                    image.Save(bmpPath, System.Drawing.Imaging.ImageFormat.Bmp);
-                }
-
-                return bmpPath;
-            }
-            catch (Exception ex)
-            {
-                LogActivity($"Conversion to BMP failed: {ex.Message}");
-                return null;
             }
         }
        
@@ -641,6 +623,7 @@ namespace interfata
                         if (currentMethod == SteganographyMethod.StandardLSB)
                         {
                             if (password.Length > 0)
+                            {
                                 SteganographyWrapper.hide_file_shuffle(
                                   pH.AddrOfPinnedObject(), (uint)pixelData.Length,
                                   fileName,
@@ -648,13 +631,16 @@ namespace interfata
                                   password,
                                   oH.AddrOfPinnedObject()
                                 );
+                            }
                             else
+                            {
                                 SteganographyWrapper.hideFile(
                                   pH.AddrOfPinnedObject(), (uint)pixelData.Length,
                                   fileName,
                                   fH.AddrOfPinnedObject(), (uint)fileData.Length,
                                   oH.AddrOfPinnedObject()
                                 );
+                            }
                         }
                         else
                         {
@@ -1396,6 +1382,27 @@ namespace interfata
             }
 
             return bmp;
+        }
+
+        string ConvertTo24bppBmp(string inputPath)
+        {
+            try
+            {
+                string bmpPath = Path.ChangeExtension(Path.GetTempFileName(), ".bmp");
+                using (var src = Image.FromFile(inputPath))
+                using (var dst = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb))
+                using (var g = Graphics.FromImage(dst))
+                {
+                    g.DrawImage(src, 0, 0, src.Width, src.Height);
+                    dst.Save(bmpPath, ImageFormat.Bmp);
+                }
+                return bmpPath;
+            }
+            catch (Exception ex)
+            {
+                LogActivity($"Conversion failed: {ex.Message}");
+                return null;
+            }
         }
 
         private void textboxEncryptionKey_Enter(object sender, EventArgs e)
