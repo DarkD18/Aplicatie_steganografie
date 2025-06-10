@@ -356,7 +356,6 @@ namespace interfata
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.BackColor = this.BackColor = ColorTranslator.FromHtml("#b3d0f2"); ;
             this.ClientSize = new System.Drawing.Size(983, 819);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cmbType);

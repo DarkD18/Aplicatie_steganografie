@@ -166,7 +166,10 @@ namespace interfata
                         long bytesPerSample = hdr.BitsPerSample / 8;
                         long totalSamples = hdr.DataSize / bytesPerSample;
                         maxCapacity = totalSamples / 8;
-
+                        if (hdr.BitsPerSample == 16)
+                        {
+                            maxCapacity = maxCapacity / 2;
+                        }
                         lblCapacityInfo.Text =
                             $"Can hide: ~{maxCapacity} bytes ({maxCapacity / 1024.0:N1} KB)";
                         lblCapacityInfo.ForeColor =
@@ -249,11 +252,9 @@ namespace interfata
                 string password = get_shuffle_key();
                 if (string.IsNullOrWhiteSpace(inputPath)) { LogActivity("Pick a WAV first"); return; }
 
-                // 1) Read header + samples
                 var (hdr, samples) = WavHelper.ReadWavFile(inputPath);
                 originalSamples = samples;
 
-                // 2) Pick payload
                 byte[] payload;
                 string payloadName;
                 using (var ofd = new OpenFileDialog { Title = "Select file to hide" })
@@ -263,11 +264,13 @@ namespace interfata
                     payloadName = Path.GetFileName(ofd.FileName);
                 }
 
-                // 3) Read entire WAV for DLL call
                 byte[] wavData = File.ReadAllBytes(inputPath);
                 byte[] outputData = new byte[wavData.Length];
-
-                // 4) Call native
+                if(payload.Length > maxCapacity)
+                {
+                    LogActivity("File is too large to be hidden!");
+                    return;
+                }
                 var hW = GCHandle.Alloc(wavData, GCHandleType.Pinned);
                 var hP = GCHandle.Alloc(payload, GCHandleType.Pinned);
                 var hO = GCHandle.Alloc(outputData, GCHandleType.Pinned);
