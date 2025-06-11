@@ -78,6 +78,17 @@ namespace interfata
         public AplicatieSteganografie()
         {
             InitializeComponent();
+            var tip = new ToolTip();
+
+            // Opțional: câteva setări fine
+            tip.AutoPopDelay = 5000;  // cât stă deschis
+            tip.InitialDelay = 500;   // după cât timp apare
+            tip.ReshowDelay = 200;
+            tip.ShowAlways = true;  // chiar dacă form-ul nu e activ
+
+            // Apoi bifezi hover‐textul pe buton
+            tip.SetToolTip(btnBrowseInput, "Alege fișierul de intrare (imagine sau WAV)");
+
             cmbType.SelectedIndex = 0; 
             cmbOutputFormat.SelectedIndex = 0; 
             currentMethod = SteganographyMethod.StandardLSB;

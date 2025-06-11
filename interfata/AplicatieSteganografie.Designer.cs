@@ -32,6 +32,7 @@ namespace interfata
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.txtInputPath = new System.Windows.Forms.TextBox();
             this.btnBrowseInput = new System.Windows.Forms.Button();
@@ -61,6 +62,14 @@ namespace interfata
             this.cmbType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupPaths = new System.Windows.Forms.GroupBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip3 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip4 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip5 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip6 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip7 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip8 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModified)).BeginInit();
             this.grpOperationMode.SuspendLayout();
@@ -82,6 +91,7 @@ namespace interfata
             this.txtInputPath.Name = "txtInputPath";
             this.txtInputPath.Size = new System.Drawing.Size(443, 22);
             this.txtInputPath.TabIndex = 1;
+            this.toolTip5.SetToolTip(this.txtInputPath, "Cale imagine sau audio cover");
             // 
             // btnBrowseInput
             // 
@@ -90,6 +100,7 @@ namespace interfata
             this.btnBrowseInput.Size = new System.Drawing.Size(75, 23);
             this.btnBrowseInput.TabIndex = 2;
             this.btnBrowseInput.Text = "browse";
+            this.toolTip1.SetToolTip(this.btnBrowseInput, "Alege fișierul de intrare (imagine sau WAV)");
             this.btnBrowseInput.UseVisualStyleBackColor = true;
             this.btnBrowseInput.Click += new System.EventHandler(this.btnBrowseInput_Click);
             // 
@@ -108,6 +119,7 @@ namespace interfata
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(443, 22);
             this.txtMessage.TabIndex = 7;
+            this.toolTip3.SetToolTip(this.txtMessage, "Mesaj de ascuns");
             // 
             // btnHideMessage
             // 
@@ -125,6 +137,7 @@ namespace interfata
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.Size = new System.Drawing.Size(443, 22);
             this.txtOutput.TabIndex = 9;
+            this.toolTip4.SetToolTip(this.txtOutput, "Mesaj extras");
             // 
             // btnRevealMessage
             // 
@@ -139,7 +152,7 @@ namespace interfata
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(0, 244);
+            this.label5.Location = new System.Drawing.Point(0, 238);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(111, 16);
             this.label5.TabIndex = 12;
@@ -171,6 +184,7 @@ namespace interfata
             this.btnExit.Size = new System.Drawing.Size(155, 37);
             this.btnExit.TabIndex = 16;
             this.btnExit.Text = "EXIT";
+            this.toolTip8.SetToolTip(this.btnExit, "Paraseste aplicatia");
             this.btnExit.UseVisualStyleBackColor = false;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -201,6 +215,7 @@ namespace interfata
             this.btnCompareImages.Size = new System.Drawing.Size(155, 29);
             this.btnCompareImages.TabIndex = 19;
             this.btnCompareImages.Text = "Compare images";
+            this.toolTip6.SetToolTip(this.btnCompareImages, "Vezi diferentele dintre original si modificat");
             this.btnCompareImages.Click += new System.EventHandler(this.btnCompareImages_Click);
             // 
             // cmbMethod
@@ -274,6 +289,7 @@ namespace interfata
             this.btnReset.Size = new System.Drawing.Size(150, 30);
             this.btnReset.TabIndex = 26;
             this.btnReset.Text = "Reset";
+            this.toolTip7.SetToolTip(this.btnReset, "Reseteaza aplicatia la starea initiala");
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
@@ -294,6 +310,7 @@ namespace interfata
             this.textboxShuffle.TabIndex = 30;
             this.textboxShuffle.Text = "Shuffle key";
             this.textboxShuffle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip2.SetToolTip(this.textboxShuffle, "Cheie bazata pe care modificarea pixelilor va fi distribuita");
             this.textboxShuffle.Enter += new System.EventHandler(this.textboxShuffle_Enter);
             this.textboxShuffle.Leave += new System.EventHandler(this.textboxShuffle_Leave);
             // 
@@ -350,6 +367,55 @@ namespace interfata
             this.groupPaths.TabIndex = 0;
             this.groupPaths.TabStop = false;
             this.groupPaths.Text = "File / WAV Path";
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutoPopDelay = 5000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.ReshowDelay = 200;
+            this.toolTip1.ShowAlways = true;
+            // 
+            // toolTip3
+            // 
+            this.toolTip3.AutoPopDelay = 5000;
+            this.toolTip3.InitialDelay = 500;
+            this.toolTip3.ReshowDelay = 200;
+            this.toolTip3.ShowAlways = true;
+            // 
+            // toolTip4
+            // 
+            this.toolTip4.AutoPopDelay = 5000;
+            this.toolTip4.InitialDelay = 500;
+            this.toolTip4.ReshowDelay = 200;
+            this.toolTip4.ShowAlways = true;
+            // 
+            // toolTip5
+            // 
+            this.toolTip5.AutoPopDelay = 5000;
+            this.toolTip5.InitialDelay = 500;
+            this.toolTip5.ReshowDelay = 200;
+            this.toolTip5.ShowAlways = true;
+            // 
+            // toolTip6
+            // 
+            this.toolTip6.AutoPopDelay = 5000;
+            this.toolTip6.InitialDelay = 500;
+            this.toolTip6.ReshowDelay = 200;
+            this.toolTip6.ShowAlways = true;
+            // 
+            // toolTip7
+            // 
+            this.toolTip7.AutoPopDelay = 5000;
+            this.toolTip7.InitialDelay = 500;
+            this.toolTip7.ReshowDelay = 200;
+            this.toolTip7.ShowAlways = true;
+            // 
+            // toolTip8
+            // 
+            this.toolTip8.AutoPopDelay = 5000;
+            this.toolTip8.InitialDelay = 500;
+            this.toolTip8.ReshowDelay = 200;
+            this.toolTip8.ShowAlways = true;
             // 
             // AplicatieSteganografie
             // 
@@ -426,6 +492,14 @@ namespace interfata
         private ComboBox cmbType;
         private Label label2;
         private GroupBox groupPaths;
+        private ToolTip toolTip1;
+        private ToolTip toolTip2;
+        private ToolTip toolTip3;
+        private ToolTip toolTip4;
+        private ToolTip toolTip5;
+        private ToolTip toolTip6;
+        private ToolTip toolTip7;
+        private ToolTip toolTip8;
     }
 }
 
