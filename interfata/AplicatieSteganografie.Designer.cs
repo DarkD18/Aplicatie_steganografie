@@ -147,7 +147,7 @@ namespace interfata
             // 
             // txtActivity
             // 
-            this.txtActivity.Location = new System.Drawing.Point(20, 645);
+            this.txtActivity.Location = new System.Drawing.Point(710, 64);
             this.txtActivity.Name = "txtActivity";
             this.txtActivity.Size = new System.Drawing.Size(729, 164);
             this.txtActivity.TabIndex = 14;
@@ -157,7 +157,7 @@ namespace interfata
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(350, 628);
+            this.label6.Location = new System.Drawing.Point(1087, 38);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(71, 16);
             this.label6.TabIndex = 15;
@@ -166,7 +166,7 @@ namespace interfata
             // btnExit
             // 
             this.btnExit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(69)))), ((int)(((byte)(97)))));
-            this.btnExit.Location = new System.Drawing.Point(820, 779);
+            this.btnExit.Location = new System.Drawing.Point(1284, 773);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(155, 37);
             this.btnExit.TabIndex = 16;
@@ -177,9 +177,9 @@ namespace interfata
             // pictureBoxOriginal
             // 
             this.pictureBoxOriginal.Image = global::interfata.Properties.Resources.placeholder_image_original;
-            this.pictureBoxOriginal.Location = new System.Drawing.Point(3, 281);
+            this.pictureBoxOriginal.Location = new System.Drawing.Point(26, 293);
             this.pictureBoxOriginal.Name = "pictureBoxOriginal";
-            this.pictureBoxOriginal.Size = new System.Drawing.Size(395, 344);
+            this.pictureBoxOriginal.Size = new System.Drawing.Size(600, 500);
             this.pictureBoxOriginal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxOriginal.TabIndex = 17;
             this.pictureBoxOriginal.TabStop = false;
@@ -187,16 +187,16 @@ namespace interfata
             // pictureBoxModified
             // 
             this.pictureBoxModified.Image = global::interfata.Properties.Resources.placeholder_image_result;
-            this.pictureBoxModified.Location = new System.Drawing.Point(404, 281);
+            this.pictureBoxModified.Location = new System.Drawing.Point(662, 293);
             this.pictureBoxModified.Name = "pictureBoxModified";
-            this.pictureBoxModified.Size = new System.Drawing.Size(395, 344);
+            this.pictureBoxModified.Size = new System.Drawing.Size(600, 500);
             this.pictureBoxModified.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxModified.TabIndex = 18;
             this.pictureBoxModified.TabStop = false;
             // 
             // btnCompareImages
             // 
-            this.btnCompareImages.Location = new System.Drawing.Point(805, 313);
+            this.btnCompareImages.Location = new System.Drawing.Point(1284, 343);
             this.btnCompareImages.Name = "btnCompareImages";
             this.btnCompareImages.Size = new System.Drawing.Size(155, 29);
             this.btnCompareImages.TabIndex = 19;
@@ -269,7 +269,7 @@ namespace interfata
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(825, 743);
+            this.btnReset.Location = new System.Drawing.Point(1289, 737);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(150, 30);
             this.btnReset.TabIndex = 26;
@@ -279,7 +279,7 @@ namespace interfata
             // 
             // progressBarCompare
             // 
-            this.progressBarCompare.Location = new System.Drawing.Point(805, 354);
+            this.progressBarCompare.Location = new System.Drawing.Point(1284, 378);
             this.progressBarCompare.Name = "progressBarCompare";
             this.progressBarCompare.Size = new System.Drawing.Size(155, 22);
             this.progressBarCompare.TabIndex = 28;
@@ -346,7 +346,7 @@ namespace interfata
             this.groupPaths.Controls.Add(this.cmbOutputFormat);
             this.groupPaths.Location = new System.Drawing.Point(12, 86);
             this.groupPaths.Name = "groupPaths";
-            this.groupPaths.Size = new System.Drawing.Size(786, 96);
+            this.groupPaths.Size = new System.Drawing.Size(692, 96);
             this.groupPaths.TabIndex = 0;
             this.groupPaths.TabStop = false;
             this.groupPaths.Text = "File / WAV Path";
@@ -356,7 +356,7 @@ namespace interfata
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(983, 819);
+            this.ClientSize = new System.Drawing.Size(1450, 819);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cmbType);
             this.Controls.Add(this.progressBarCompare);

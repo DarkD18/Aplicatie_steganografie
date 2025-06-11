@@ -81,6 +81,8 @@ namespace interfata
             cmbType.SelectedIndex = 0; 
             cmbOutputFormat.SelectedIndex = 0; 
             currentMethod = SteganographyMethod.StandardLSB;
+            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             // Initialize UI based on mode
             SetOperationMode(OperationMode.Message);
             cmbMethod.SelectedIndexChanged += (sender, e) =>
