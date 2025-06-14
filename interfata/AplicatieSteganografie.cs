@@ -78,16 +78,6 @@ namespace interfata
         public AplicatieSteganografie()
         {
             InitializeComponent();
-            var tip = new ToolTip();
-
-            // Opțional: câteva setări fine
-            tip.AutoPopDelay = 5000;  // cât stă deschis
-            tip.InitialDelay = 500;   // după cât timp apare
-            tip.ReshowDelay = 200;
-            tip.ShowAlways = true;  // chiar dacă form-ul nu e activ
-
-            // Apoi bifezi hover‐textul pe buton
-            tip.SetToolTip(btnBrowseInput, "Alege fișierul de intrare (imagine sau WAV)");
 
             cmbType.SelectedIndex = 0; 
             cmbOutputFormat.SelectedIndex = 0; 
@@ -112,7 +102,6 @@ namespace interfata
             // Show/hide controls based on mode
             txtMessage.Visible = mode == OperationMode.Message;
             label3.Visible = mode == OperationMode.Message;
-            //txtOutput_path.Visible = mode == OperationMode.File;
             // Update UI text
             btnHideMessage.Text = mode == OperationMode.Message ? "Hide Message" : "Hide File";
             btnRevealMessage.Text = mode == OperationMode.Message ? "Extract Message" : "Extract File";
@@ -346,7 +335,6 @@ namespace interfata
         {
             try
             {
-                // 1) sanity checks
                 var inputPath = txtInputPath.Text;
                 var message = txtMessage.Text;
                 string password = get_shuffle_key();
@@ -361,7 +349,6 @@ namespace interfata
                     return;
                 }
 
-                // 2) load WAV + samples to compute capacity
                 var (hdr, samples) = WavHelper.ReadWavFile(inputPath);
                 originalSamples = samples;
                 long capacity = samples.Length / 8;
@@ -374,11 +361,9 @@ namespace interfata
                     return;
                 }
 
-                // 3) read raw bytes for P/Invoke
                 byte[] wavData = File.ReadAllBytes(inputPath);
                 byte[] outputData = new byte[wavData.Length];
 
-                // 4) pin & call native hideMessageInWav
                 var hIn = GCHandle.Alloc(wavData, GCHandleType.Pinned);
                 var hOut = GCHandle.Alloc(outputData, GCHandleType.Pinned);
                 try
@@ -409,7 +394,6 @@ namespace interfata
                     hOut.Free();
                 }
 
-                // 5) write out the stego‐WAV
                 string outPath = Path.Combine(
                     Path.GetDirectoryName(inputPath),
                     Path.GetFileNameWithoutExtension(inputPath) + "_msg_hidden.wav"
@@ -417,7 +401,6 @@ namespace interfata
                 File.WriteAllBytes(outPath, outputData);
                 LogActivity($"WAV with hidden message written to: {outPath}");
 
-                // 6) stash & render metadata
                 modifiedSamples = WavHelper.ReadWavFile(outPath).samples;
                 var lines = new[]
                 {
@@ -460,7 +443,6 @@ namespace interfata
                     return;
                 }
 
-                // 1) Convert to 24-bpp BMP bytes
                 byte[] bmpData;
                 int headerSize = Marshal.SizeOf(typeof(BMPHeader));
                 BMPHeader header;
@@ -1027,8 +1009,8 @@ namespace interfata
                         reader.Read(pixelData, 0, pixelData.Length);
                 }
 
-                    StringBuilder fileName = new StringBuilder(256); // Adjust size as needed
-                byte[] fileData = new byte[pixelData.Length];
+                    StringBuilder fileName = new StringBuilder(256); 
+                    byte[] fileData = new byte[pixelData.Length];
                     fileSize = (uint)fileData.Length;
 
                     GCHandle headerHandle = GCHandle.Alloc(header, GCHandleType.Pinned);
@@ -1121,22 +1103,17 @@ namespace interfata
             {
                 if (currentMode == OperationMode.Message)
                 {
-                    extract_message(); // Extract a hidden text message from the image
+                    extract_message(); 
                 }
                 else if (currentMode == OperationMode.File)
                 {
-                    extract_file(); // Extract a hidden file from the image
+                    extract_file(); 
                 }
             }
             catch (Exception ex)
             {
                 LogActivity($"Error: {ex.Message}");
             }
-        }
-
-        private void txtActivity_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -1180,7 +1157,6 @@ namespace interfata
                 return;
             }
 
-            // --- IMAGE CASE (your existing code) ---
             if (originalImage == null || modifiedImage == null)
             {
                 MessageBox.Show("Please load and process both images first.");
@@ -1273,24 +1249,29 @@ namespace interfata
             txtActivity.Clear();
 
             // Reset PictureBoxes to placeholder images
-            pictureBoxOriginal.Image = Properties.Resources.placeholder_image_original; // Ensure you have a placeholder image
-            pictureBoxModified.Image = Properties.Resources.placeholder_image_result;   // Ensure you have a placeholder image
+            pictureBoxOriginal.Image = Properties.Resources.placeholder_image_original; 
+            pictureBoxModified.Image = Properties.Resources.placeholder_image_result;
 
             // Reset ComboBox and RadioButtons
-            cmbMethod.SelectedIndex = 0; // Reset to the first method (StandardLSB)
-            rdbMessage.Checked = true;  // Reset to "Hide Message" mode
+            // Reset to the first method (StandardLSB)
+            cmbMethod.SelectedIndex = 0;
+            // Reset to "Hide Message" mode
+            rdbMessage.Checked = true;  
             cmbOutputFormat.SelectedIndex = 0;
-            cmbType.SelectedIndex = 0; // Reset to Image type
+            // Reset to Image type
+            cmbType.SelectedIndex = 0; 
             // Reset internal variables
             currentMethod = SteganographyMethod.StandardLSB;
             currentMode = OperationMode.Message;
             originalImage = null;
             modifiedImage = null;
             textboxShuffle.Text = Constants.DEFAULT_SHUFFLE_TEXT;
-            textboxShuffle.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
+            // Set text color to gray to indicate placeholder
+            textboxShuffle.ForeColor = Color.Gray; 
             // Reset capacity info
             lblCapacityInfo.Text = string.Empty;
-
+            //reset input path
+            processingPath = string.Empty;
             // Log reset action
             LogActivity("Application reset to initial state.");
         }
@@ -1300,7 +1281,8 @@ namespace interfata
             if(textboxShuffle.Text == Constants.DEFAULT_SHUFFLE_TEXT)
             {
                 textboxShuffle.Text = string.Empty;
-                textboxShuffle.ForeColor = Color.Black; // Reset text color to default
+                // Reset text color to default
+                textboxShuffle.ForeColor = Color.Black; 
             }
         }
 
@@ -1309,7 +1291,8 @@ namespace interfata
             if(string.IsNullOrWhiteSpace(textboxShuffle.Text))
             {
                 textboxShuffle.Text = Constants.DEFAULT_SHUFFLE_TEXT;
-                textboxShuffle.ForeColor = Color.Gray; // Set text color to gray to indicate placeholder
+                // Set text color to gray to indicate placeholder
+                textboxShuffle.ForeColor = Color.Gray; 
             }
         }
 
@@ -1324,15 +1307,19 @@ namespace interfata
 
         private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(currentType == SteganographyType.Audio)
+            {
+                return;
+            }
             // Update the currentMethod based on the selected index
             if (cmbMethod.SelectedIndex == 0)
             {
-                currentMethod = SteganographyMethod.StandardLSB; // Standard LSB (Blue Channel)
+                currentMethod = SteganographyMethod.StandardLSB;
                 LogActivity("Switched to Standard LSB (Blue Channel) method.");
             }
             else if (cmbMethod.SelectedIndex == 1)
             {
-                currentMethod = SteganographyMethod.MultiChannelLSB; // Multi-Channel LSB (R+G+B)
+                currentMethod = SteganographyMethod.MultiChannelLSB; 
                 LogActivity("Switched to Multi-Channel LSB (R+G+B) method.");
             }
             if (!string.IsNullOrEmpty(processingPath))
@@ -1342,11 +1329,9 @@ namespace interfata
         }
         private void cmbType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // 1) Update your enum & log
             currentType = (SteganographyType)cmbType.SelectedIndex;
             LogActivity(currentType == SteganographyType.Audio ? "Switched to audio."
                                                                 : "Switched to image.");
-
             // 2) Rebuild the Technique list
             cmbMethod.BeginUpdate();
             cmbMethod.Items.Clear();
@@ -1360,7 +1345,6 @@ namespace interfata
             // 3) Always pick the first entry so we never have an invalid selection
             cmbMethod.SelectedIndex = 0;
 
-            // 4) Tweak any other UI bits
             update_operation_type();
         }
         private Image RenderTextInfo(Size sz, string[] lines)

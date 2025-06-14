@@ -165,7 +165,6 @@ namespace interfata
             this.txtActivity.Size = new System.Drawing.Size(729, 164);
             this.txtActivity.TabIndex = 14;
             this.txtActivity.Text = "";
-            this.txtActivity.TextChanged += new System.EventHandler(this.txtActivity_TextChanged);
             // 
             // label6
             // 

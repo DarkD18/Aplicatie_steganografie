@@ -41,9 +41,9 @@ static void generate_pixel_order(uint32_t* order, uint32_t count, uint32_t seed)
         order[j] = tmp;
     }
 }
-#pragma endregion
 
-__declspec(dllexport) const uint8_t* get_embedded_filename(const uint8_t* stego_path) {
+__declspec(dllexport) const uint8_t* get_embedded_filename(const uint8_t* stego_path)
+{
     BMPImage* bmp = load_bmp(stego_path);
     if (!bmp) return NULL;
 
@@ -68,6 +68,9 @@ __declspec(dllexport) const uint8_t* get_embedded_filename(const uint8_t* stego_
     free_bmp(bmp);
     return extracted_filename;
 }
+#pragma endregion
+
+
 
 #pragma region standard
 __declspec(dllexport) void hideMessage(
