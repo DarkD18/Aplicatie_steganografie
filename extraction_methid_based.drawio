@@ -29,9 +29,6 @@
         <mxCell id="hXe2r_c-SLhxvQUESAF0-7" value="EROARE&lt;br&gt;In imagine nu este ascuns un fisier!" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="830" y="200" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="hXe2r_c-SLhxvQUESAF0-8" value="DA" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="690" y="290" width="40" height="30" as="geometry" />
-        </mxCell>
         <mxCell id="hXe2r_c-SLhxvQUESAF0-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="hXe2r_c-SLhxvQUESAF0-9" target="hXe2r_c-SLhxvQUESAF0-11">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="820" y="380" as="targetPoint" />
@@ -92,6 +89,15 @@
         </mxCell>
         <mxCell id="hXe2r_c-SLhxvQUESAF0-25" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="560" y="350" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hXe2r_c-SLhxvQUESAF0-26" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="438" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hXe2r_c-SLhxvQUESAF0-29" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="570" y="440" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hXe2r_c-SLhxvQUESAF0-30" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="680" y="290" width="40" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
