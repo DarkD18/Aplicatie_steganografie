@@ -37,6 +37,11 @@
         <mxCell id="oS-onsG5LbLoDlVmQf2W-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-9" target="oS-onsG5LbLoDlVmQf2W-15" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="610" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="635" y="410" />
+              <mxPoint x="635" y="570" />
+              <mxPoint x="535" y="570" />
+            </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-9" value="&amp;nbsp; Este imaginea de tip BMP?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -63,63 +68,63 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-15" value="Analiza header BMP" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="477.5" y="660" width="120" height="60" as="geometry" />
+          <mxGeometry x="477.5" y="600" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-17" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="670" y="770" as="targetPoint" />
+            <mxPoint x="680" y="690" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="880" y="770" />
+              <mxPoint x="880" y="690" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-17" value="Analiza header BMP" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="820" y="650" width="120" height="60" as="geometry" />
+          <mxGeometry x="820" y="500" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="oS-onsG5LbLoDlVmQf2W-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="oS-onsG5LbLoDlVmQf2W-19" target="oS-onsG5LbLoDlVmQf2W-22" edge="1">
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-19" target="oS-onsG5LbLoDlVmQf2W-22" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-19" value="Extragere LSB pentru verificare metoda" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="610" y="830" width="130" height="60" as="geometry" />
+          <mxGeometry x="610" y="700" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-22" target="oS-onsG5LbLoDlVmQf2W-28" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="490" y="1000" as="targetPoint" />
+            <mxPoint x="490" y="870" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-22" target="oS-onsG5LbLoDlVmQf2W-29" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="850" y="1000" as="targetPoint" />
+            <mxPoint x="850" y="870" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-22" value="Verificare magic header" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="597.5" y="935" width="155" height="130" as="geometry" />
+          <mxGeometry x="597.5" y="805" width="155" height="130" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-25" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;STGF&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="530" y="968" width="60" height="30" as="geometry" />
+          <mxGeometry x="530" y="838" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-27" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;Text&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="760" y="968" width="50" height="30" as="geometry" />
+          <mxGeometry x="760" y="838" width="50" height="30" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-28" target="oS-onsG5LbLoDlVmQf2W-30" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-28" value="Recuperare nume + continut fisier" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="442.5" y="1080" width="130" height="60" as="geometry" />
+          <mxGeometry x="442.5" y="950" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" parent="1" source="oS-onsG5LbLoDlVmQf2W-29" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="692.5" y="1190" as="targetPoint" />
+            <mxPoint x="692.5" y="1060" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="842.5" y="1190" />
+              <mxPoint x="842.5" y="1060" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-29" value="Decodare UTF-8" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="777.5" y="1080" width="130" height="60" as="geometry" />
+          <mxGeometry x="777.5" y="950" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oS-onsG5LbLoDlVmQf2W-30" value="Afisare in UI / salvare fisier" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="602.5" y="1230" width="170" height="70" as="geometry" />
+          <mxGeometry x="602.5" y="1100" width="170" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
