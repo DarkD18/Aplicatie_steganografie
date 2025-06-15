@@ -1,0 +1,127 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" version="27.1.5">
+  <diagram name="Page-1" id="3YfBE5jEpw1kHHX4IOcJ">
+    <mxGraphModel dx="1665" dy="749" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-1" target="oS-onsG5LbLoDlVmQf2W-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-1" value="Utilizator incarca fisier modificat" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="80" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-2" target="oS-onsG5LbLoDlVmQf2W-9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-2" target="oS-onsG5LbLoDlVmQf2W-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="890" y="275" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-2" value="Sistem detecteaza tip" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="665" y="220" width="130" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-5" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;Imagine&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="580" y="248" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-7" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;Audio&lt;/font&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="810" y="248" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-9" target="oS-onsG5LbLoDlVmQf2W-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="405" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-9" target="oS-onsG5LbLoDlVmQf2W-15">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-9" value="&amp;nbsp; Este imaginea de tip BMP?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="475" y="350" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="540" y="570" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="418" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-11" value="Convertire la BMP&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="357.5" y="460" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-12" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="425" y="380" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-14" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="610" y="380" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-15" target="oS-onsG5LbLoDlVmQf2W-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-15" value="Analiza header BMP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="477.5" y="660" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="670" y="770" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="880" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-17" value="Analiza header BMP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="650" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-19" target="oS-onsG5LbLoDlVmQf2W-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-19" value="Extragere LSB pentru verificare metoda" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="830" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-22" target="oS-onsG5LbLoDlVmQf2W-28">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="1000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-22" target="oS-onsG5LbLoDlVmQf2W-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="1000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-22" value="Verificare magic header" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="597.5" y="935" width="155" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-25" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;STGF&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="530" y="968" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-27" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;Text&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="760" y="968" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-28" target="oS-onsG5LbLoDlVmQf2W-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-28" value="Recuperare nume + continut fisier" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="442.5" y="1080" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="oS-onsG5LbLoDlVmQf2W-29">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="692.5" y="1190" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="842.5" y="1190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-29" value="Decodare UTF-8" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="777.5" y="1080" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="oS-onsG5LbLoDlVmQf2W-30" value="Afisare in UI / salvare fisier" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="602.5" y="1230" width="170" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
