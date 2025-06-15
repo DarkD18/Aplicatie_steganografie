@@ -33,7 +33,7 @@
         <mxCell id="9w8pt_KnntWncsHf2yix-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-9" target="9w8pt_KnntWncsHf2yix-15">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="9w8pt_KnntWncsHf2yix-9" value="Se gaseste campul &quot;RIFF&quot;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="9w8pt_KnntWncsHf2yix-9" value="Se gaseste campul &quot;WAVE&quot;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="545" y="380" width="130" height="120" as="geometry" />
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-11" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
