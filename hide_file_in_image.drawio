@@ -1,0 +1,121 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" version="27.1.5">
+  <diagram name="Page-1" id="K-sxUWhbFrWCEqYCbN1u">
+    <mxGraphModel dx="1665" dy="749" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-2" target="Z8RvkhJ9j8ZMX2Gw0k4A-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-2" value="Ascunde mesaj text/fisier in imagine" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="200" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="375" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-4" value="Este selectat&amp;nbsp;&lt;div&gt;m&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;od fisier&lt;/span&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="685" y="320" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-5" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="750" y="450" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-6" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="630" y="338" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-7" value="Ascundere mesaj" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="350" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-10" value="Codifica &quot;STGF&quot;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-14" target="Z8RvkhJ9j8ZMX2Gw0k4A-19">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-14" value="Codifica metoda folosita intr-un byte" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="675" y="620" width="135" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-19" target="Z8RvkhJ9j8ZMX2Gw0k4A-23">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="895" y="785" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-19" target="Z8RvkhJ9j8ZMX2Gw0k4A-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-19" value="Este selectata tehnica multichannel" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="730" width="145" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-20" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="815" y="750" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-23" target="Z8RvkhJ9j8ZMX2Gw0k4A-27">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1035" y="945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-23" target="Z8RvkhJ9j8ZMX2Gw0k4A-26">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="795" y="945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-23" value="Exista cheie shuffle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="845" y="880" width="140" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-24" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="975" y="910" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-25" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="815" y="910" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-26" value="Ascundere fisier folosind multichannel" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="755" y="1040" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-27" value="Ascundere fisier folosind multichannel + shuffle" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="935" y="1040" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-30" target="Z8RvkhJ9j8ZMX2Gw0k4A-34">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="Z8RvkhJ9j8ZMX2Gw0k4A-30" target="Z8RvkhJ9j8ZMX2Gw0k4A-33">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-30" value="Exista cheie shuffle" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="890" width="140" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-31" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="640" y="920" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-32" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="460" y="920" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-33" value="Ascundere fisier folosind LSB" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1040" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-34" value="Ascundere fisier folosind LSB + shuffle" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="1040" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z8RvkhJ9j8ZMX2Gw0k4A-35" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="625" y="750" width="40" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -33,7 +33,7 @@
         <mxCell id="9w8pt_KnntWncsHf2yix-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-9" target="9w8pt_KnntWncsHf2yix-15">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="9w8pt_KnntWncsHf2yix-9" value="Se gaseste campul &quot;RIFF&quot;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="9w8pt_KnntWncsHf2yix-9" value="Se gaseste campul &quot;WAVE&quot;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="545" y="380" width="130" height="120" as="geometry" />
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-11" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
@@ -45,9 +45,9 @@
         <mxCell id="9w8pt_KnntWncsHf2yix-14" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="690" y="400" width="40" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="9w8pt_KnntWncsHf2yix-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-15" target="9w8pt_KnntWncsHf2yix-20">
+        <mxCell id="9w8pt_KnntWncsHf2yix-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-15" target="9w8pt_KnntWncsHf2yix-34">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="620" as="targetPoint" />
+            <mxPoint x="765" y="710" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-15" target="9w8pt_KnntWncsHf2yix-21">
@@ -62,36 +62,58 @@
         <mxCell id="9w8pt_KnntWncsHf2yix-19" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="690" y="590" width="40" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="9w8pt_KnntWncsHf2yix-20" value="Extragere mesaj text" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="680" y="710" width="130" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-21" target="9w8pt_KnntWncsHf2yix-25">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="580" y="820" as="targetPoint" />
+            <mxPoint x="520" y="820" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-21" target="9w8pt_KnntWncsHf2yix-27">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="330" y="750" as="targetPoint" />
+            <mxPoint x="270" y="750" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-21" value="Foloseste cheie&lt;div&gt;shuffle&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="400" y="680" width="130" height="120" as="geometry" />
+          <mxGeometry x="340" y="680" width="130" height="120" as="geometry" />
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-23" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="490" y="590" width="40" height="30" as="geometry" />
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-25" value="Extragere fiser standard LSB" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="520" y="860" width="130" height="60" as="geometry" />
+          <mxGeometry x="460" y="860" width="130" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="9w8pt_KnntWncsHf2yix-27" value="Extragere fisier standard LSB + shuffle" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="280" y="860" width="130" height="60" as="geometry" />
+        <mxCell id="9w8pt_KnntWncsHf2yix-27" value="Extragere mesaj standard LSB + shuffle" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="860" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-28" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="350" y="710" width="40" height="30" as="geometry" />
+          <mxGeometry x="290" y="710" width="40" height="30" as="geometry" />
         </mxCell>
         <mxCell id="9w8pt_KnntWncsHf2yix-29" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="540" y="710" width="40" height="30" as="geometry" />
+          <mxGeometry x="480" y="710" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-34" target="9w8pt_KnntWncsHf2yix-35">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="940" y="820" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="9w8pt_KnntWncsHf2yix-34" target="9w8pt_KnntWncsHf2yix-36">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-34" value="Foloseste cheie&lt;div&gt;shuffle&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="680" width="130" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-35" value="Extragere mesaj standard LSB" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="860" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-36" value="Extragere mesaj standard LSB + shuffle" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="860" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-37" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;DA&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="710" y="710" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9w8pt_KnntWncsHf2yix-38" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 153, 255));&quot;&gt;NU&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="900" y="710" width="40" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
