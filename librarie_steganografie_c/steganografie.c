@@ -70,8 +70,6 @@ __declspec(dllexport) const uint8_t* get_embedded_filename(const uint8_t* stego_
 }
 #pragma endregion
 
-
-
 #pragma region standard
 __declspec(dllexport) void hideMessage(
     const uint8_t* pixel_data, uint32_t pixel_data_size,
@@ -246,7 +244,6 @@ __declspec(dllexport) void extractFile(
 
 #pragma endregion 
 
-
 #pragma region multichannel
 // Multi-Channel LSB: Spreads bits across R+G+B channels
 __declspec(dllexport) void hide_message_multichannel(
@@ -300,7 +297,7 @@ __declspec(dllexport) void hide_file_multichannel(
     uint8_t* output_data)
 {
     const char magic[4] = { 'S','T','G','F' };
-    uint8_t method = 0x02; // 0x01 = Multichannell LSB
+    uint8_t method = 0x02; 
     uint32_t name_len = strlen((const char*)file_name);
     uint32_t total_bits = 40 + 32 + name_len * 8 + 32 + file_size * 8;
 
@@ -1215,7 +1212,6 @@ void extractFileFromWav(
 
 #pragma region wav_lsb_shuffle
 
-// forward from your image code:
 extern uint32_t  password_to_seed(const uint8_t* pw);
 extern void      generate_pixel_order(uint32_t* order, uint32_t n, uint32_t seed);
 
@@ -1460,7 +1456,7 @@ void extractFileShuffleFromWav(
     uint32_t       file_data_bufsize,
     uint32_t* file_size
 ) {
-    if (!wav_data || !password || !file_name || !file_data || !*file_size)
+    if (!wav_data || !password || !file_name || !file_data || !file_size)
         ERR("Null pointer provided.");
     if (wav_data_size < 44) ERR("Data too small to be a valid WAV.");
     if (memcmp(wav_data, "RIFF", 4) || memcmp(wav_data + 8, "WAVE", 4))

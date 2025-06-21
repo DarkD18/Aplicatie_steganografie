@@ -137,7 +137,8 @@ namespace interfata
                 txtInputPath.Text = inputPath;
                 processingPath = inputPath;
             }
-
+            pictureBoxModified.Image = Properties.Resources.placeholder_image_result;
+            modifiedImage = null; 
             if (currentType == SteganographyType.Image)
             {
                 // --- Image path handling (unchanged) ---
@@ -153,6 +154,7 @@ namespace interfata
                 pictureBoxOriginal.Image = originalImage;
                 UpdateCapacityInfo(processingPath);
             }
+           
             else
             {
                 // --- WAV path handling ---
