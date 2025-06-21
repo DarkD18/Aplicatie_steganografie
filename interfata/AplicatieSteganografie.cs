@@ -58,6 +58,9 @@ namespace interfata
     public partial class AplicatieSteganografie : Form
     {   
 
+        private SteganographyMethod currentMethod = SteganographyMethod.StandardLSB;
+        private SteganographyType currentType = SteganographyType.Image;
+        private OperationMode currentMode = OperationMode.Message;
         private System.Windows.Forms.PictureBox pictureBoxOriginal;
         private System.Windows.Forms.PictureBox pictureBoxModified;
         private System.Windows.Forms.Button btnCompareImages;
@@ -69,9 +72,6 @@ namespace interfata
         //private System.Windows.Forms.Button btnHideFile;
         //private System.Windows.Forms.Button btnExtractFile;
 
-        private SteganographyMethod currentMethod = SteganographyMethod.StandardLSB;
-        private SteganographyType currentType = SteganographyType.Image;
-        private OperationMode currentMode = OperationMode.Message;
         /*Global variables.*/
         long maxCapacity;
         string processingPath;
@@ -121,12 +121,12 @@ namespace interfata
 
         private void btnBrowseInput_Click(object sender, EventArgs e)
         {
-            // 1) Choose the right filter
+            // 1 Choose the right filter
             string filter = currentType == SteganographyType.Audio
                 ? "WAV files|*.wav|All Files|*.*"
                 : "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif;*.tif|All Files|*.*";
 
-            // 2) Show dialog
+            //  Show dialog
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = filter;
@@ -1168,6 +1168,8 @@ namespace interfata
             progressBarCompare.Value = 0;
 
             var diffImage = new Bitmap(originalImage.Width, originalImage.Height);
+            int affectedPixels = 0;
+            int totalPixels = originalImage.Width * originalImage.Height;
 
             await Task.Run(() =>
             {
@@ -1179,7 +1181,10 @@ namespace interfata
                         var pM = modifiedImage.GetPixel(x, y);
 
                         if (pO != pM)
+                        {
                             diffImage.SetPixel(x, y, Color.Red);
+                            affectedPixels++;
+                        }
                         else
                             diffImage.SetPixel(x, y, pO);
                     }
@@ -1191,11 +1196,21 @@ namespace interfata
 
             // show diff
             {
+                double percent = 100.0 * affectedPixels / totalPixels;
                 var preview = new Form
                 {
                     Text = "Differences Highlighted",
                     StartPosition = FormStartPosition.CenterScreen,
                     ClientSize = new Size(1000, 700)
+                };
+                // Add a label for statistics
+                var statsLabel = new Label
+                {
+                    Dock = DockStyle.Top,
+                    Height = 40,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Text = $"Affected pixels: {affectedPixels:N0} / {totalPixels:N0} ({percent:F2}%)"
                 };
                 var pb = new PictureBox
                 {
@@ -1204,6 +1219,7 @@ namespace interfata
                     SizeMode = PictureBoxSizeMode.Zoom
                 };
                 preview.Controls.Add(pb);
+                preview.Controls.Add(statsLabel);
                 preview.Show();
             }
 
