@@ -1,0 +1,36 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" version="27.1.6">
+  <diagram name="Page-1" id="q-o7MhwRqkZ7csKzlddU">
+    <mxGraphModel dx="1281" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="nWg7QTnIFZmbZ9hlwevg-1" target="nWg7QTnIFZmbZ9hlwevg-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-1" value="Fisier original" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="180" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="nWg7QTnIFZmbZ9hlwevg-2" target="nWg7QTnIFZmbZ9hlwevg-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="nWg7QTnIFZmbZ9hlwevg-2" target="nWg7QTnIFZmbZ9hlwevg-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-2" value="Mesaj/fisier de ascuns" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="270" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeColor=light-dark(#000000,#3333FF);" edge="1" parent="1" source="nWg7QTnIFZmbZ9hlwevg-9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-9" value="Motor C" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="180" width="130" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="nWg7QTnIFZmbZ9hlwevg-18" value="Fisier rezultat" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="230" width="120" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
